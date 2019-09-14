@@ -20,16 +20,17 @@ function setup() {
   x = width / 2; 
   y = height / 1.25;
 }
-//creeating canvas and defining variables in setup()
+//creating canvas and defining variables in setup()
 
 function mouseWheel() {
   if (event.delta > 0) {
-    scalar *= 1.02
+    scalar *= 1.02;
   }
   else if (event.delta < 0) {
-    scalar *= 0.98
+    scalar *= 0.98;
   }
 }
+//adding mouseWheel function which will use the same scalar variable to control the size of the image
 
 function draw() {
 
@@ -62,13 +63,11 @@ function draw() {
       }
       //controlling the image with WASD keys 
     }
-
-  imageMode(CENTER);
-
   image(plane, x, y, plane.width * scalar, plane.height * scalar );
+  //drawing the image
 }
-//all inside the draw loop so the image keeps responding when key is held down
-
+//all put inside the draw loop so the image keeps responding when input is continously given. 
+//For example: keys being held down
 
 
 

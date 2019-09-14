@@ -1,5 +1,5 @@
 // Interactive Scene
-// Mueez
+// Mueez Rafiquie
 // Sept 9, 2019
 
 
@@ -8,15 +8,27 @@ let plane;
 let scalar = 1;
 let x;
 let y;
+// Creating global variables
 
 function preload() {
   plane = loadImage("assets/plane.png");
 }
+//preloading image so there's no delay in presenting it
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   x = width / 2; 
   y = height / 1.25;
+}
+//creeating canvas and defining variables in setup()
+
+function mouseWheel() {
+  if (event.delta > 0) {
+    scalar *= 1.02
+  }
+  else if (event.delta < 0) {
+    scalar *= 0.98
+  }
 }
 
 function draw() {
@@ -30,33 +42,34 @@ function draw() {
       else if (keyCode === DOWN_ARROW) {
         scalar /= 1.02;
       }
+      //using a multiplying factor to change size of image
+
       if (keyIsDown(87)) {
-        background(255)
-        y -= 10
+        background(255);
+        y -= 10;
       }
       else if (keyIsDown(65)) {
-        background(255)
-        x -= 10
+        background(255);
+        x -= 10;
       }
       else if (keyIsDown(83)) {
-        background(255)
-        y += 10
+        background(255);
+        y += 10;
       }
       else if (keyIsDown(68)) {
-        background(255)
-        x += 10
+        background(255);
+        x += 10;
       }
+      //controlling the image with WASD keys 
     }
 
   imageMode(CENTER);
 
   image(plane, x, y, plane.width * scalar, plane.height * scalar );
 }
+//all inside the draw loop so the image keeps responding when key is held down
 
-function mouseWheel() {
 
-
-}
 
 
 

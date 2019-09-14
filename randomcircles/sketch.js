@@ -22,7 +22,7 @@ function draw() {
 }
 
 function keyPressed() {
-  if (keyCode === SPACE_BAR) {
+  if (keyCode === 32) {
     background(255);
   }
 }  

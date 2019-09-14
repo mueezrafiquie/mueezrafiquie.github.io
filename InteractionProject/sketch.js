@@ -1,6 +1,6 @@
 // Interactive Scene
 // Mueez Rafiquie
-// Sept 9, 2019
+// Sept 14, 2019
 
 
 
@@ -68,42 +68,3 @@ function draw() {
 }
 //all put inside the draw loop so the image keeps responding when input is continously given. 
 //For example: keys being held down
-
-
-
-
-
-
-
-// let n = 100
-//
-// function mousePressed() {
-//  if (keyIsPressed) {
-//    if (key === "r") {
-//      rect(mouseX, mouseY, n, n)
-//    }
-//    else if (key === "e") {
-//      ellipse(mouseX,mouseY,n,n);
-//    }
-//  }
-// }
-
-// function keyPressed() {
-//  if (key === "b") {
-//    background(0);
-//    stroke(255);
-//    fill(255);
-//  }
-//   else if (key === "w") {
-//     background(255);
-//     stroke(0);
-//     fill(0);
-//   }
-//   else if (keyCode === UP_ARROW) {
-//     n += 5;
-   
-//   }
-//   else if (keyCode === DOWN_ARROW) {
-//     n -= 5;
-//   }
-// }

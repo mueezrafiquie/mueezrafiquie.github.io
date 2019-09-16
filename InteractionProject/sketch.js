@@ -22,6 +22,22 @@ function setup() {
 }
 //creating canvas and defining variables in setup()
 
+
+function draw() {
+  background(255);
+
+  if (keyIsPressed && insideCanvas() === true) {
+    move();
+    //controlling the image with WASD keys 
+  }
+
+  image(plane, x, y, plane.width * scalar, plane.height * scalar );
+  //drawing the image
+}
+//all put inside the draw loop so the image keeps responding when input is continously given. 
+//For example: keys being held down
+
+
 function mouseWheel() {
   if (event.delta > 0) {
     scalar *= 1.02;
@@ -32,39 +48,43 @@ function mouseWheel() {
 }
 //adding mouseWheel function which will use the same scalar variable to control the size of the image
 
-function draw() {
 
-  background(255);
-
-  if (keyIsPressed) {
-      if (keyCode === UP_ARROW) {
-        scalar *= 1.02;
-      }
-      else if (keyCode === DOWN_ARROW) {
-        scalar /= 1.02;
-      }
-      //using a multiplying factor to change size of image
-
-      if (keyIsDown(87)) {
-        background(255);
-        y -= 10;
-      }
-      else if (keyIsDown(65)) {
-        background(255);
-        x -= 10;
-      }
-      else if (keyIsDown(83)) {
-        background(255);
-        y += 10;
-      }
-      else if (keyIsDown(68)) {
-        background(255);
-        x += 10;
-      }
-      //controlling the image with WASD keys 
-    }
-  image(plane, x, y, plane.width * scalar, plane.height * scalar );
-  //drawing the image
+function insideCanvas() {
+  if (x > width || x < 0) {
+    return false
+  }
+  
+  else if (y > height || y < 0) {
+    return false
+  }
+  else {
+    return true
+  }
 }
-//all put inside the draw loop so the image keeps responding when input is continously given. 
-//For example: keys being held down
+
+function move() {
+  if (keyCode === UP_ARROW) {
+    scalar *= 1.02;
+  }
+  else if (keyCode === DOWN_ARROW) {
+    scalar /= 1.02;
+  }
+  //using a multiplying factor to change size of image
+
+  if (keyIsDown(87)) {
+    background(255);
+    y -= 10;
+  }
+  else if (keyIsDown(65)) {
+    background(255);
+    x -= 10;
+  }
+  else if (keyIsDown(83)) {
+    background(255);
+    y += 10;
+  }
+  else if (keyIsDown(68)) {
+    background(255);
+    x += 10;
+  }
+}

@@ -32,6 +32,7 @@ function draw() {
   }
   else {
     keepInsideCanvas();
+    //keeping image inside cavas if at the edge
   }
 
   image(plane, x, y, plane.width * scalar, plane.height * scalar );

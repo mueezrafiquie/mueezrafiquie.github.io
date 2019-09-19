@@ -36,8 +36,8 @@ function setup() {
 
 
 function draw() {
-  image(sky, 0, 0, windowWidth, windowHeight)
-  background(255)
+  image(sky, 0, 0, width*2, height*2)
+  
 
   if (keyIsPressed && isInsideCanvas() === true) {
     move();

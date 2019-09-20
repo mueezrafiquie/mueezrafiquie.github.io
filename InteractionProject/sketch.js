@@ -9,18 +9,24 @@ let x;
 let y;
 // Creating global variables for image
 
-// let circleX;
-// let circleY;
-// let dx = 13;
-// let dy = 13;
-// let circleR;
+let circleX;
+let circleY;
+let dx = 5;
+let dy = 5;
+let circleR;
 // Creating global variables for projectile
+
 
 function preload() {
   plane = loadImage("assets/plane.png");
   sky = loadImage("assets/skybackground.jpg");
+
+        
+  soundFormats('mp3');
+  shootingSound = loadSound('assets/shootingsound.mp3');
 }
 //preloading image so there's no delay in presenting it
+
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -28,15 +34,18 @@ function setup() {
   y = height / 1.75;
   imageMode(CENTER);  //centering image 
 
-  // circleX = width/2;
-  // circleY = height/2;
-  // circleR = 100;
+  circleX = width/2;
+  circleY = height/2;
+  circleR = 10;
+
+  shootingSound.setVolume(0.2);
 }
 //creating canvas and defining variables in setup()
 
 
 function draw() {
-  image(sky, 0, 0, width*2, height*2)
+  image(sky, 0, 0, width*2, height*2);
+  // background(255)
   
 
   if (keyIsPressed && isInsideCanvas() === true) {
@@ -51,20 +60,18 @@ function draw() {
   image(plane, x, y, plane.width * scalar, plane.height * scalar );
   //drawing the image
 
-  // moveShape()
-  // displayCircle()
-
-
+  moveShape();
+  displayCircle();
 }
 //all put inside the draw loop so the image keeps responding when input is continously given. 
 //For example: keys being held down
-
 
 
 function windowResized() {
   setup();
 }
 //allows canvas size to change if you want to use the function 
+
 
 function mouseWheel() {
   if (event.delta > 0) {
@@ -75,7 +82,6 @@ function mouseWheel() {
   }
 }
 //adding mouseWheel function which will use the same scalar variable to control the size of the image
-
 
 
 function keepInsideCanvas() {
@@ -115,6 +121,7 @@ function isInsideCanvas() {
   //multiplying by scalar allows for the function to work as the size of the image changes
 }
 
+
 function move() {
   if (keyCode === UP_ARROW) {
     scalar *= 1.02;
@@ -125,67 +132,53 @@ function move() {
   //using a multiplying factor to change size of image
 
   if (keyIsDown(87)) {       //w
-    background(255);
+    image(sky, 0, 0, width*2, height*2);
     y -= 10;
   }
   else if (keyIsDown(65)) {  //a
-    background(255);
+    image(sky, 0, 0, width*2, height*2);
     x -= 10;
   }
   else if (keyIsDown(83)) {  //s
-    background(255);
+    image(sky, 0, 0, width*2, height*2);
     y += 10;
   }
   else if (keyIsDown(68)) {  //d
-    background(255);
+    image(sky, 0, 0, width*2, height*2);
     x += 10;
   }
   //changing x and y cords with WASD keys to move image
 }
 
 
+function moveShape() {
+  circleX += dx;
+  circleY += dy;
+}
 
 
-// function moveShape() {
-//   circleX += dx;
-//   circleY += dy;
-// }
+function displayCircle() {
+  if (circleX > width - circleR/2 || circleX < 0 + circleR/2) {
+    dx *= -1;
+  }
 
-// function displayCircle() {
-//   if (circleX > width - circleR/2 || circleX < 0 + circleR/2) {
-//     dx *= -1;
-//   }
+  else if (circleY > height - circleR/2 || circleY < 0 + circleR/2) {
+    dy *= -1;
+  }
 
-//   else if (circleY > height - circleR/2 || circleY < 0 + circleR/2) {
-//     dy *= -1;
-//   }
-
-//   fill(0);
-//   circle(circleX, circleY, circleR);
-// }
+  fill(0);
+  circle(circleX, circleY, circleR);
+}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// function keyPressed() {
-//   if (keyCode === 32) {
-//     background(255)
-//     circleX = width/2
-//     circleY = height/2
-//   }
-// }
+function keyPressed() {
+  if (keyCode === 32) {
+    background(255)
+    circleX = width/2
+    circleY = height/2
+    shootingSound.play();
+  }
+}
 
 
 

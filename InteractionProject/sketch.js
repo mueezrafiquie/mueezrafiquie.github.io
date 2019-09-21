@@ -122,12 +122,6 @@ function isHit() {
 //function that returns whether or not the projectile is touching one of the three hit boxes
 
 
-
-
-
-
-
-
 function windowResized() {
   setup();
 }
@@ -231,8 +225,8 @@ function displayCircle() {
 
   fill(0);
   circle(circleX, circleY, circleR);
-  //drawing projectile
 }
+//drawing projectile
 
 
 function keyPressed() {

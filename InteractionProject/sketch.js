@@ -11,8 +11,8 @@ let y;
 
 let circleX;
 let circleY;
-let dx = 5;
-let dy = 5;
+let dx = 13;
+let dy = 10;
 let circleR;
 // Creating global variables for projectile
 
@@ -56,15 +56,22 @@ function draw() {
     //keeping image inside cavas if at the edge
   }
 
-  isHit()
+  isHit() //calling isHit() function 
+
+  if (isHit() === true) { //stopping projectile once it comes in contact with the planes hitbox
+    dx = 0 
+    dy = 0
+  }
 
 
   image(plane, x, y, plane.width * scalar, plane.height * scalar );
   //drawing the image
 
-  rect(x - 20, y - 114, 40, 227)
-  rect(x - 148, y - 50, 295, 40)
-  rect(x - 48, y + 76, 98, 25)
+  noFill()
+  noStroke()
+  rect(x - 20 * scalar, y - 114 * scalar, 40 * scalar, 227 * scalar)
+  rect(x - 148 * scalar, y - 50 * scalar, 295 * scalar, 40 * scalar)
+  rect(x - 48 * scalar, y + 76 * scalar, 98 * scalar, 25 * scalar)
   // fill(255)
   // ellipse(x + 20, y + - 114, 5, 5)
   
@@ -76,12 +83,16 @@ function draw() {
 
 
 function isHit() {
-  if (circleX > x -19 && circleX < x + 21 && circleY > y - 114 && circleY < y + 113 ) {
-    console.log("hit")
+  if (circleX > x -19 * scalar && circleX < x + 21 * scalar && circleY > y - 113 * scalar && circleY < y + 114 * scalar) {
+    // console.log("hit")
     return true
   }
-
-
+  else if (circleX > x - 147 * scalar && circleX < x + 148 * scalar && circleY > y - 49 * scalar && circleY < y - 11 * scalar) {
+    return true
+  }
+  else if (circleX > x - 47 * scalar && circleX < x + 51 * scalar && circleY > y + 75 * scalar && circleY < y + 102 * scalar) {
+    return true
+  }
 }
 
 
@@ -199,8 +210,11 @@ function displayCircle() {
 function keyPressed() {
   if (keyCode === 32) {
     background(255)
-    circleX = width/2
-    circleY = height/2
+    dx = 13 
+    dy = 10
+    circleX = width - 40
+    circleY = height - 50
+
     shootingSound.play();
   }
 }

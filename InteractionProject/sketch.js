@@ -20,8 +20,7 @@ let circleR;
 function preload() {
   plane = loadImage("assets/plane.png");
   sky = loadImage("assets/skybackground.jpg");
-
-        
+   
   soundFormats('mp3');
   shootingSound = loadSound('assets/shootingsound.mp3');
 }
@@ -34,8 +33,8 @@ function setup() {
   y = height / 1.75;
   imageMode(CENTER);  //centering image 
 
-  circleX = width/2;
-  circleY = height/2;
+  circleX = width - 10;
+  circleY = height - 5;
   circleR = 10;
 
   shootingSound.setVolume(0.2);
@@ -57,14 +56,40 @@ function draw() {
     //keeping image inside cavas if at the edge
   }
 
+  isHit()
+
+
   image(plane, x, y, plane.width * scalar, plane.height * scalar );
   //drawing the image
 
+  rect(x - 20, y - 114, 40, 227)
+  rect(x - 148, y - 50, 295, 40)
+  rect(x - 48, y + 76, 98, 25)
+  // fill(255)
+  // ellipse(x + 20, y + - 114, 5, 5)
+  
   moveShape();
   displayCircle();
 }
 //all put inside the draw loop so the image keeps responding when input is continously given. 
 //For example: keys being held down
+
+
+function isHit() {
+  if (circleX > x -19 && circleX < x + 21 && circleY > y - 114 && circleY < y + 113 ) {
+    console.log("hit")
+    return true
+  }
+
+
+}
+
+
+
+
+
+
+
 
 
 function windowResized() {

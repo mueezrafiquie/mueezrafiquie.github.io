@@ -11,10 +11,15 @@ let y;
 
 let circleX;
 let circleY;
-let dx = 13;
-let dy = 10;
+let dx;
+let dy;
 let circleR;
 // Creating global variables for projectile
+
+// let lastTimeSpeedIncreased = 0;
+// let waitTime = 500;
+
+// Time variables
 
 
 function preload() {
@@ -29,13 +34,16 @@ function preload() {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  dx = random(-15, 15)
+  dy = random(-15, 15)
+
   x = width / 2; 
   y = height / 1.75;
-  imageMode(CENTER);  //centering image 
+  imageMode(CENTER);   
 
   circleX = width - 10;
   circleY = height - 5;
-  circleR = 10;
+  circleR = 40;
 
   shootingSound.setVolume(0.2);
 }
@@ -44,9 +52,7 @@ function setup() {
 
 function draw() {
   image(sky, 0, 0, width*2, height*2);
-  // background(255)
   
-
   if (keyIsPressed && isInsideCanvas() === true) {
     move();
     //controlling the image with WASD keys 
@@ -58,10 +64,25 @@ function draw() {
 
   isHit() //calling isHit() function 
 
-  if (isHit() === true) { //stopping projectile once it comes in contact with the planes hitbox
+  
+  if (isHit() === false) {
+    if (dx < 10 && dy < 10) {
+      dx = random(dx - 5, dx + 5)
+      dy = random(dy - 5, dy +5)
+    }
+    else {
+      dx = dx
+      dy = dy
+    }
+  }
+  //telling projectile to vary speed and direction while not in contact with the hit-box
+
+
+  if (isHit() === true) { 
     dx = 0 
     dy = 0
   }
+  //stopping projectile once it comes in contact with the planes hit-box
 
 
   image(plane, x, y, plane.width * scalar, plane.height * scalar );
@@ -72,19 +93,20 @@ function draw() {
   rect(x - 20 * scalar, y - 114 * scalar, 40 * scalar, 227 * scalar)
   rect(x - 148 * scalar, y - 50 * scalar, 295 * scalar, 40 * scalar)
   rect(x - 48 * scalar, y + 76 * scalar, 98 * scalar, 25 * scalar)
-  // fill(255)
-  // ellipse(x + 20, y + - 114, 5, 5)
+  //drawing hit-box
   
   moveShape();
   displayCircle();
+  //moving projectile
 }
 //all put inside the draw loop so the image keeps responding when input is continously given. 
 //For example: keys being held down
 
 
+
+
 function isHit() {
   if (circleX > x -19 * scalar && circleX < x + 21 * scalar && circleY > y - 113 * scalar && circleY < y + 114 * scalar) {
-    // console.log("hit")
     return true
   }
   else if (circleX > x - 147 * scalar && circleX < x + 148 * scalar && circleY > y - 49 * scalar && circleY < y - 11 * scalar) {
@@ -93,8 +115,11 @@ function isHit() {
   else if (circleX > x - 47 * scalar && circleX < x + 51 * scalar && circleY > y + 75 * scalar && circleY < y + 102 * scalar) {
     return true
   }
+  else {
+    return false
+  }
 }
-
+//function that returns whether or not the projectile is touching one of the three hit boxes
 
 
 
@@ -191,6 +216,7 @@ function moveShape() {
   circleX += dx;
   circleY += dy;
 }
+//moves projectile 
 
 
 function displayCircle() {
@@ -201,23 +227,25 @@ function displayCircle() {
   else if (circleY > height - circleR/2 || circleY < 0 + circleR/2) {
     dy *= -1;
   }
+  //keeps projectile inside the canvas
 
   fill(0);
   circle(circleX, circleY, circleR);
+  //drawing projectile
 }
 
 
 function keyPressed() {
   if (keyCode === 32) {
-    background(255)
-    dx = 13 
-    dy = 10
+    dx = random(-15, 15)
+    dy = random(-15, 15)
+
     circleX = width - 40
     circleY = height - 50
 
     shootingSound.play();
   }
 }
-
+//reseting projectile position and speed
 
 

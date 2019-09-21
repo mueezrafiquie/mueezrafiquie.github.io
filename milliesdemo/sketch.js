@@ -2,7 +2,7 @@
 // Mueez
 
 let isGrey = true
-let lastwaittime = 0
+let lasttimecolorswitched = 0
 let waittime = 2000
 
 function setup() {
@@ -17,8 +17,8 @@ function draw() {
     background(0)
   }
 
-    if (millis() > lastwaittime + waittime) {
+    if (millis() > lasttimecolorswitched + waittime) {
       isGrey = !isGrey
-      lastwaittime = millis()
+      lasttimecolorswitched = millis()
     }
 }

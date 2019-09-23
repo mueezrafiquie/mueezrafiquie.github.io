@@ -43,7 +43,7 @@ function setup() {
 
   circleX = width - 10;
   circleY = height - 5;
-  circleR = 40;
+  circleR = 15;
 
   shootingSound.setVolume(0.2);
 }
@@ -64,24 +64,18 @@ function draw() {
 
   isHit() //calling isHit() function 
 
-  
-  if (isHit() === false) {
-    if (dx < 10 && dy < 10) {
-      dx = random(dx - 5, dx + 5)
-      dy = random(dy - 5, dy +5)
-    }
-    else {
-      dx = dx
-      dy = dy
-    }
-  }
-  //telling projectile to vary speed and direction while not in contact with the hit-box
-
-
   if (isHit() === true) { 
     dx = 0 
     dy = 0
   }
+
+  if (isHit() === false) {
+    moveRandomly()
+  }
+  //telling projectile to vary speed and direction while not in contact with the hit-box
+
+
+
   //stopping projectile once it comes in contact with the planes hit-box
 
 
@@ -97,6 +91,7 @@ function draw() {
   
   moveShape();
   displayCircle();
+ 
   //moving projectile
 }
 //all put inside the draw loop so the image keeps responding when input is continously given. 
@@ -121,6 +116,16 @@ function isHit() {
 }
 //function that returns whether or not the projectile is touching one of the three hit boxes
 
+function moveRandomly() {
+  if (dx < 10 && dy < 10) {
+    dx = random(dx - 5, dx + 5)
+    dy = random(dy - 5, dy +5)
+  }
+  else {
+    dx = dx
+    dy = dy
+  }
+}
 
 function windowResized() {
   setup();

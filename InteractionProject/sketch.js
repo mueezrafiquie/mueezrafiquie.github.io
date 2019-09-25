@@ -2,6 +2,7 @@
 // Mueez Rafiquie
 // Sept 14, 2019
 
+let canMove = true;
 
 let plane;
 let scalar = 1;
@@ -43,7 +44,7 @@ function setup() {
 
   circleX = width - 10;
   circleY = height - 5;
-  circleR = 15;
+  circleR = 50;
 
   shootingSound.setVolume(0.2);
 }
@@ -65,6 +66,7 @@ function draw() {
   isHit() //calling isHit() function 
 
   if (isHit() === true) { 
+    canMove = false
     dx = 0 
     dy = 0
   }
@@ -183,31 +185,33 @@ function isInsideCanvas() {
 
 
 function move() {
-  if (keyCode === UP_ARROW) {
-    scalar *= 1.02;
-  }
-  else if (keyCode === DOWN_ARROW) {
-    scalar /= 1.02;
-  }
-  //using a multiplying factor to change size of image
+  if (canMove === true) {
+    if (keyCode === UP_ARROW) {
+      scalar *= 1.02;
+    }
+    else if (keyCode === DOWN_ARROW) {
+      scalar /= 1.02;
+    }
+    //using a multiplying factor to change size of image
 
-  if (keyIsDown(87)) {       //w
-    image(sky, 0, 0, width*2, height*2);
-    y -= 10;
+    if (keyIsDown(87)) {       //w
+      image(sky, 0, 0, width*2, height*2);
+      y -= 10;
+    }
+    else if (keyIsDown(65)) {  //a
+      image(sky, 0, 0, width*2, height*2);
+      x -= 10;
+    }
+    else if (keyIsDown(83)) {  //s
+      image(sky, 0, 0, width*2, height*2);
+      y += 10;
+    }
+    else if (keyIsDown(68)) {  //d
+      image(sky, 0, 0, width*2, height*2);
+      x += 10;
+    }
   }
-  else if (keyIsDown(65)) {  //a
-    image(sky, 0, 0, width*2, height*2);
-    x -= 10;
-  }
-  else if (keyIsDown(83)) {  //s
-    image(sky, 0, 0, width*2, height*2);
-    y += 10;
-  }
-  else if (keyIsDown(68)) {  //d
-    image(sky, 0, 0, width*2, height*2);
-    x += 10;
-  }
-  //changing x and y cords with WASD keys to move image
+    //changing x and y cords with WASD keys to move image
 }
 
 
@@ -236,6 +240,8 @@ function displayCircle() {
 
 function keyPressed() {
   if (keyCode === 32) {
+    canMove = true
+
     dx = random(-15, 15)
     dy = random(-15, 15)
 

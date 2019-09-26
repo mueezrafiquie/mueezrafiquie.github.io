@@ -17,8 +17,8 @@ function draw() {
     background(0)
   }
 
-    if (millis() > lasttimecolorswitched + waittime) {
-      isGrey = !isGrey
-      lasttimecolorswitched = millis()
-    }
+  if (millis() > lasttimecolorswitched + waittime) {
+    isGrey = !isGrey
+    lasttimecolorswitched = millis()
+  }
 }

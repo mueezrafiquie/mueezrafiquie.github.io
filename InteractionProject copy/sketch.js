@@ -16,20 +16,21 @@ let canProjectileMove = true;
 //creating global variables to allow for the starting and stopping of the plane and projectile
 
 let plane;
-let scalar = 1;
-let x;
-let y;
+let scalar = 0.1;
+let planeX;
+let planeY;
 //creating global variables for image
 
-let circleX;
+let basicShotX;
 let circleY;
-let dx;
-let dy;
+let shotDx;
+let shotDy;
 let circleR;
 //creating global variables for projectile
 
 
 function preload() {
+ 
   plane = loadImage("assets/plane.png");
   sky = loadImage("assets/skybackground.jpg");
   //loading images
@@ -42,20 +43,20 @@ function preload() {
 function setup() {
   createCanvas(windowWidth, windowHeight); //creating canvas
 
-  dx = random(-10, 10);
-  dy = random(-10, 10);
+  shotDy = 5;
+  // shotDy = random(-10, 10);
   //setting projectile speech to a random value between -10 and 10
 
-  x = width / 2;
-  y = height / 1.75;
+  planeX = width / 2;
+  planeY = height / 1.1;
   imageMode(CENTER);
   //setting starting point for plane and centering its cordinate origin
 
   canPlaneMove = true
 
-  circleX = width - 10;
-  circleY = height - 5;
-  circleR = 60;
+  basicShotX = planeX;
+  circleY = planeY - 210 * scalar;
+  circleR = 20;
   //defining projectile dimensions
 
   shootingSound.setVolume(0.2); //setting a volume for reset sound
@@ -66,17 +67,17 @@ function draw() {
   image(sky, 0, 0, width * 2, height * 2);  //drawing background
   
 
-  isHit(); //calling isHit() function so game can detect if the projectile is touching the plane
+  // isHit(); //calling isHit() function so game can detect if the projectile is touching the plane
 
   moveInsideCanvas(); //allowing plane to move inside of canvas
 
-  moveUntilHit(); //allowing plane to move until it comes in contact with the projectile in which case it freezes both
+  // moveUntilHit(); //allowing plane to move until it comes in contact with the projectile in which case it freezes both
 
-  drawHitBox(); //drawing hit-box
+  // drawHitBox(); //drawing hit-box
 
-  moveProjectile(); //moving projectile
+  shootProjectile(); //moving projectile
 
-  image(plane, x, y, plane.width * scalar, plane.height * scalar); //drawing the plane image
+  image(plane, planeX, planeY, plane.width * scalar, plane.height * scalar); //drawing the plane image
 }
 //all put inside the draw loop so the image keeps responding when input is continously given.
 
@@ -107,17 +108,18 @@ function movePlane() {
     //using a multiplying factor to change size of image
 
     if (keyIsDown(87)) {
+      imageMode(CENTER)
       image(sky, 0, 0, width * 2, height * 2); //w
-      y -= 10;
+      planeY -= 10;
     } else if (keyIsDown(65)) {
       image(sky, 0, 0, width * 2, height * 2); //a
-      x -= 10;
+      planeX -= 10;
     } else if (keyIsDown(83)) {
       image(sky, 0, 0, width * 2, height * 2); //s
-      y += 10;
+      planeY += 10;
     } else if (keyIsDown(68)) {
       image(sky, 0, 0, width * 2, height * 2); //d
-      x += 10;
+      planeX += 10;
     }
   }
 }
@@ -125,25 +127,25 @@ function movePlane() {
 
 function keepInsideCanvas() {
   if (keyIsPressed && isInsideCanvas() === "over west") {
-    x += 10;
+    planeX += 10;
   } else if (keyIsPressed && isInsideCanvas() === "over east") {
-    x -= 10;
+    planeX -= 10;
   } else if (keyIsPressed && isInsideCanvas() === "over north") {
-    y += 10;
+    planeY += 10;
   } else if (keyIsPressed && isInsideCanvas() === "over south") {
-    y -= 10;
+    planeY -= 10;
   }
 }
  //changes the x or y cord to move the plane back toward the inside of canvas when it hits the edge to keep it in 
 
 function isInsideCanvas() {
-  if (x + 160 * scalar > width) {
+  if (planeX + 150 * scalar > width) {
     return "over east";
-  } else if (x - 160 * scalar < 0) {
+  } else if (planeX - 130 * scalar < 0) {
     return "over west";
-  } else if (y + 120 * scalar > height) {
+  } else if (planeY + 210 * scalar > height) {
     return "over south";
-  } else if (y - 130 * scalar < 0) {
+  } else if (planeY - 210 * scalar < 325) {
     return "over north";
   } else {
     return true;
@@ -164,44 +166,44 @@ function moveInsideCanvas() {
 function drawHitBox() {
   noFill();
   noStroke();
-  rect(x - 20 * scalar, y - 114 * scalar, 40 * scalar, 227 * scalar);
-  rect(x - 148 * scalar, y - 50 * scalar, 295 * scalar, 40 * scalar);
-  rect(x - 48 * scalar, y + 76 * scalar, 98 * scalar, 25 * scalar);
+  rect(planeX - 20 * scalar, planeY - 114 * scalar, 40 * scalar, 227 * scalar);
+  rect(planeX - 148 * scalar, planeY - 50 * scalar, 295 * scalar, 40 * scalar);
+  rect(planeX - 48 * scalar, planeY + 76 * scalar, 98 * scalar, 25 * scalar);
 }
 //creating three seperate hit boxes around the plane image that adjust with size
 
-function moveUntilHit() {
-  if (isHit() === true) {
-    canPlaneMove = false;
-    canProjectileMove = false;
-    dx = 0;
-    dy = 0;
-  } else if (isHit() === false) {
-    moveRandomly();
-  }
-}
+// function moveUntilHit() {
+//   if (isHit() === true) {
+//     canPlaneMove = false;
+//     canProjectileMove = false;
+//     shotDx = 0;
+
+//   } else if (isHit() === false) {
+//     moveRandomly();
+//   }
+// }
 //makes it so when the projectile hits the plane both it and plane stop moving until reset by the space bar
 
 function isHit() {
   if (
-    circleX > x - 19 * scalar &&
-    circleX < x + 21 * scalar &&      //rectangle one
-    circleY > y - 113 * scalar &&
-    circleY < y + 114 * scalar
+    basicShotX > planeX - 19 * scalar &&
+    basicShotX < planeX + 21 * scalar &&      //rectangle one
+    circleY > planeY - 113 * scalar &&
+    circleY < planeY + 114 * scalar
   ) {
     return true;
   } else if (
-    circleX > x - 147 * scalar &&
-    circleX < x + 148 * scalar &&     //rectangle two
-    circleY > y - 49 * scalar &&
-    circleY < y - 11 * scalar
+    basicShotX > planeX - 147 * scalar &&
+    basicShotX < planeX + 148 * scalar &&     //rectangle two
+    circleY > planeY - 49 * scalar &&
+    circleY < planeY - 11 * scalar
   ) {
     return true;
   } else if (
-    circleX > x - 47 * scalar &&
-    circleX < x + 51 * scalar &&      //rectangle three
-    circleY > y + 75 * scalar &&
-    circleY < y + 102 * scalar
+    basicShotX > planeX - 47 * scalar &&
+    basicShotX < planeX + 51 * scalar &&      //rectangle three
+    circleY > planeY + 75 * scalar &&
+    circleY < planeY + 102 * scalar
   ) {
     return true;
   } else {
@@ -210,49 +212,43 @@ function isHit() {
 }
 //function that returns whether or not the projectile is touching one of the three hit boxes
 
-function moveRandomly() {
-  if (dx < 10 && dy < 10) {
-    dx = random(dx - 5, dx + 5);
-    dy = random(dy - 5, dy + 5);
-  } else {
-    dx = dx;
-    dy = dy;
-  }
-}
+// function moveRandomly() {
+//   if (shotDx < 10 && shotDy < 10) {
+//     shotDx = random(shotDx - 5, shotDx + 5);
+//     shotDy = random(shotDy - 5, shotDy + 5);
+//   } else {
+//     shotDx = shotDx;
+//     shotDy = shotDy;
+//   }
+// }
 //changes the projectiles direction and speed randomly 
 
-function moveProjectile() {
-  circleX += dx;
-  circleY += dy;
-  //moves projectile
+function shootProjectile(someProjectilesYcord) {
+//   circleX += shotDx;
+someProjectilesYcord -= shotDy;
+//   //moves projectile
 
-  if (circleX > width - circleR / 2 || circleX < 0 + circleR / 2) {
-    dx *= -1;
-  } else if (circleY > height - circleR / 2 || circleY < 0 + circleR / 2) {
-    dy *= -1;
-  }
-  //keeps projectile inside the canvas
+//   if (circleX > width - circleR / 2 || circleX < 0 + circleR / 2) {
+//     shotDx *= -1;
+//   } else if (circleY > height - circleR / 2 || circleY < 0 + circleR / 2) {
+//     shotDy *= -1;
+//   }
+//   // keeps projectile inside the canvas
 
   fill(0);
-  circle(circleX, circleY, circleR);
-  //drawing projectile
+  circle(basicShotX, someProjectilesYcord, circleR);
+//   //drawing projectile
 }
-//allows projectile to move across the screen without going off
+// //allows projectile to move across the screen without going off
 
 function keyPressed() {
   if (keyCode === 32) {
-    canPlaneMove = true; //allows plane to move again 
 
-    let xValues = [width - 40, 40];
-    let yValues = [height - 50, 50];
-    //creating local variables to reset the projectile to one of the four corners of the screen 
 
-    moveRandomly()
-    //reseting projectile movement 
 
-    circleX = random(xValues);
-    circleY = random(yValues);
-    //moves projectile to one of the four corners 
+    circleX = planeX;
+    circleY = planeY - 210;
+ 
 
     shootingSound.play();
     //plays a sound when reseting 

@@ -21,16 +21,19 @@ let planeX;
 let planeY;
 //creating global variables for image
 
-let basicShotX;
-let circleY;
-let shotDx;
+let basicShot;
+
+let shotType = "basic shot"
+
+// let shotX;
+// let shotY;
 let shotDy;
-let circleR;
+// let shotR;
 //creating global variables for projectile
 
 
 function preload() {
- 
+
   plane = loadImage("assets/plane.png");
   sky = loadImage("assets/skybackground.jpg");
   //loading images
@@ -49,14 +52,19 @@ function setup() {
 
   planeX = width / 2;
   planeY = height / 1.1;
+  basicShot = {
+    x: planeX,
+    y: planeY,
+    r: 30
+  };
   imageMode(CENTER);
   //setting starting point for plane and centering its cordinate origin
 
   canPlaneMove = true
 
-  basicShotX = planeX;
-  circleY = planeY - 210 * scalar;
-  circleR = 20;
+  // shotX = planeX;
+  // shotY = planeY - 210 * scalar;
+  // shotR = 30;
   //defining projectile dimensions
 
   shootingSound.setVolume(0.2); //setting a volume for reset sound
@@ -65,17 +73,9 @@ function setup() {
 
 function draw() {
   image(sky, 0, 0, width * 2, height * 2);  //drawing background
-  
 
-  // isHit(); //calling isHit() function so game can detect if the projectile is touching the plane
+  moveInsideCanvas();
 
-  moveInsideCanvas(); //allowing plane to move inside of canvas
-
-  // moveUntilHit(); //allowing plane to move until it comes in contact with the projectile in which case it freezes both
-
-  // drawHitBox(); //drawing hit-box
-
-  shootProjectile(); //moving projectile
 
   image(plane, planeX, planeY, plane.width * scalar, plane.height * scalar); //drawing the plane image
 }
@@ -123,7 +123,7 @@ function movePlane() {
     }
   }
 }
- //changing x and y cords with WASD keys to move image
+//changing x and y cords with WASD keys to move image
 
 function keepInsideCanvas() {
   if (keyIsPressed && isInsideCanvas() === "over west") {
@@ -136,7 +136,7 @@ function keepInsideCanvas() {
     planeY -= 10;
   }
 }
- //changes the x or y cord to move the plane back toward the inside of canvas when it hits the edge to keep it in 
+//changes the x or y cord to move the plane back toward the inside of canvas when it hits the edge to keep it in 
 
 function isInsideCanvas() {
   if (planeX + 150 * scalar > width) {
@@ -170,6 +170,48 @@ function drawHitBox() {
   rect(planeX - 148 * scalar, planeY - 50 * scalar, 295 * scalar, 40 * scalar);
   rect(planeX - 48 * scalar, planeY + 76 * scalar, 98 * scalar, 25 * scalar);
 }
+
+
+function shootProjectile(someProjectilesYcord) {
+
+}
+
+
+
+function keyPressed() {
+  if (keyCode === 32) {
+    circle(planeX, basicShot.y, basicShot.r);
+
+    if (shotType = "basic shot") {
+      // for (let i = basicShot.y; i < height; i += 5) {
+      //   basicShot.y -= shotDy;
+      //   fill(0);
+      //   circle(planeX, basicShot.y, basicShot.r);
+      // }
+    }
+  }
+}
+
+
+
+
+
+// shootingSound.play();
+//plays a sound when reseting
+//reseting the game
+
+
+
+//   //moves projectile
+
+//   if (circleX > width - circleR / 2 || circleX < 0 + circleR / 2) {
+//     shotDx *= -1;
+//   } else if (circleY > height - circleR / 2 || circleY < 0 + circleR / 2) {
+//     shotDy *= -1;
+//   }
+//   // keeps projectile inside the canvas
+
+
 //creating three seperate hit boxes around the plane image that adjust with size
 
 // function moveUntilHit() {
@@ -184,32 +226,32 @@ function drawHitBox() {
 // }
 //makes it so when the projectile hits the plane both it and plane stop moving until reset by the space bar
 
-function isHit() {
-  if (
-    basicShotX > planeX - 19 * scalar &&
-    basicShotX < planeX + 21 * scalar &&      //rectangle one
-    circleY > planeY - 113 * scalar &&
-    circleY < planeY + 114 * scalar
-  ) {
-    return true;
-  } else if (
-    basicShotX > planeX - 147 * scalar &&
-    basicShotX < planeX + 148 * scalar &&     //rectangle two
-    circleY > planeY - 49 * scalar &&
-    circleY < planeY - 11 * scalar
-  ) {
-    return true;
-  } else if (
-    basicShotX > planeX - 47 * scalar &&
-    basicShotX < planeX + 51 * scalar &&      //rectangle three
-    circleY > planeY + 75 * scalar &&
-    circleY < planeY + 102 * scalar
-  ) {
-    return true;
-  } else {
-    return false;
-  }
-}
+// function isHit() {
+//   if (
+//     basicShotX > planeX - 19 * scalar &&
+//     basicShotX < planeX + 21 * scalar &&      //rectangle one
+//     circleY > planeY - 113 * scalar &&
+//     circleY < planeY + 114 * scalar
+//   ) {
+//     return true;
+//   } else if (
+//     basicShotX > planeX - 147 * scalar &&
+//     basicShotX < planeX + 148 * scalar &&     //rectangle two
+//     circleY > planeY - 49 * scalar &&
+//     circleY < planeY - 11 * scalar
+//   ) {
+//     return true;
+//   } else if (
+//     basicShotX > planeX - 47 * scalar &&
+//     basicShotX < planeX + 51 * scalar &&      //rectangle three
+//     circleY > planeY + 75 * scalar &&
+//     circleY < planeY + 102 * scalar
+//   ) {
+//     return true;
+//   } else {
+//     return false;
+//   }
+// }
 //function that returns whether or not the projectile is touching one of the three hit boxes
 
 // function moveRandomly() {
@@ -222,36 +264,3 @@ function isHit() {
 //   }
 // }
 //changes the projectiles direction and speed randomly 
-
-function shootProjectile(someProjectilesYcord) {
-//   circleX += shotDx;
-someProjectilesYcord -= shotDy;
-//   //moves projectile
-
-//   if (circleX > width - circleR / 2 || circleX < 0 + circleR / 2) {
-//     shotDx *= -1;
-//   } else if (circleY > height - circleR / 2 || circleY < 0 + circleR / 2) {
-//     shotDy *= -1;
-//   }
-//   // keeps projectile inside the canvas
-
-  fill(0);
-  circle(basicShotX, someProjectilesYcord, circleR);
-//   //drawing projectile
-}
-// //allows projectile to move across the screen without going off
-
-function keyPressed() {
-  if (keyCode === 32) {
-
-
-
-    circleX = planeX;
-    circleY = planeY - 210;
- 
-
-    shootingSound.play();
-    //plays a sound when reseting 
-  }
-}
-//reseting the game

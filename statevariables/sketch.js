@@ -25,6 +25,8 @@ let basicShot;
 
 let shotType = "basic shot"
 
+basicShot = [];
+
 // let shotX;
 // let shotY;
 let shotDy;
@@ -52,11 +54,7 @@ function setup() {
 
   planeX = width / 2;
   planeY = height / 1.1;
-  basicShot = {
-    x: planeX,
-    y: planeY,
-    r: 30
-  };
+ 
   imageMode(CENTER);
   //setting starting point for plane and centering its cordinate origin
 
@@ -75,7 +73,7 @@ function draw() {
   image(sky, 0, 0, width * 2, height * 2);  //drawing background
 
   moveInsideCanvas();
-
+  shoot()
 
   image(plane, planeX, planeY, plane.width * scalar, plane.height * scalar); //drawing the plane image
 }
@@ -172,25 +170,63 @@ function drawHitBox() {
 }
 
 
-function shootProjectile(someProjectilesYcord) {
-
-}
-
-
 
 function keyPressed() {
   if (keyCode === 32) {
-    circle(planeX, basicShot.y, basicShot.r);
-
-    if (shotType = "basic shot") {
-      // for (let i = basicShot.y; i < height; i += 5) {
-      //   basicShot.y -= shotDy;
-      //   fill(0);
-      //   circle(planeX, basicShot.y, basicShot.r);
-      // }
-    }
+    let basicShotValues = {
+      x: planeX,
+      y: planeY - 210 *scalar,
+      r: 10,
+      dy: -5
+    };
+    basicShot.push(basicShotValues)
   }
 }
+
+function shoot() {
+  for (let i = 0; i < basicShot.length; i++) {
+    basicShot[i].y += basicShot[i].dy;
+    ellipse(basicShot[i].x, basicShot[i].y, basicShot[i].r * 2, basicShot[i].r * 2)
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

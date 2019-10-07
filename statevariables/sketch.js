@@ -38,6 +38,7 @@ function preload() {
 
   plane = loadImage("assets/plane.png");
   sky = loadImage("assets/skybackground.jpg");
+  alien = loadImage("assets/alien.png");
   //loading images
 
   soundFormats("mp3");
@@ -71,6 +72,7 @@ function setup() {
 
 function draw() {
   image(sky, 0, 0, width * 2, height * 2);  //drawing background
+  image(alien, width/2, 100, 100, 100)
 
   moveInsideCanvas();
   shoot()
@@ -175,8 +177,8 @@ function keyPressed() {
   if (keyCode === 32) {
     let basicShotValues = {
       x: planeX,
-      y: planeY - 210 *scalar,
-      r: 10,
+      y: planeY - 210 * scalar,
+      r: 5,
       dy: -5
     };
     basicShot.push(basicShotValues)
@@ -184,14 +186,20 @@ function keyPressed() {
 }
 
 function shoot() {
-  for (let i = 0; i < basicShot.length; i++) {
-    basicShot[i].y += basicShot[i].dy;
-    ellipse(basicShot[i].x, basicShot[i].y, basicShot[i].r * 2, basicShot[i].r * 2)
-  }
+  shootBasicShot()
 }
 
 
-
+function shootBasicShot() {
+  for (let i = 0; i < basicShot.length; i++) {
+    basicShot[i].y += basicShot[i].dy;
+    noStroke()
+    ellipse(basicShot[i].x, basicShot[i].y, basicShot[i].r * 2, basicShot[i].r * 2)
+    if (basicShot[i].y < length) {
+      basicShot.shift()
+    }    
+  }
+}
 
 
 

@@ -21,17 +21,21 @@ let planeX;
 let planeY;
 //creating global variables for image
 
-let basicShot;
+
 
 let shotType = "basic shot"
+let gameMode = "start"
 
 basicShot = [];
+alienLocation = [];
 
-// let shotX;
-// let shotY;
+let alienX;
+let alienY;
+
 let shotDy;
-// let shotR;
-//creating global variables for projectile
+
+
+
 
 
 function preload() {
@@ -55,7 +59,9 @@ function setup() {
 
   planeX = width / 2;
   planeY = height / 1.1;
- 
+  alienX = width / 2;
+  alienY = 100
+
   imageMode(CENTER);
   //setting starting point for plane and centering its cordinate origin
 
@@ -72,14 +78,20 @@ function setup() {
 
 function draw() {
   image(sky, 0, 0, width * 2, height * 2);  //drawing background
-  image(alien, width/2, 100, 100, 100)
+
 
   moveInsideCanvas();
   shoot()
 
+  image(alien, alienX, alienY, 100, 100)
   image(plane, planeX, planeY, plane.width * scalar, plane.height * scalar); //drawing the plane image
 }
 //all put inside the draw loop so the image keeps responding when input is continously given.
+
+
+
+
+
 
 
 function windowResized() {
@@ -186,7 +198,9 @@ function keyPressed() {
 }
 
 function shoot() {
-  shootBasicShot()
+  if (shotType === "basic shot") {
+    shootBasicShot()
+  }
 }
 
 
@@ -194,117 +208,33 @@ function shootBasicShot() {
   for (let i = 0; i < basicShot.length; i++) {
     basicShot[i].y += basicShot[i].dy;
     noStroke()
+    fill(0)
     ellipse(basicShot[i].x, basicShot[i].y, basicShot[i].r * 2, basicShot[i].r * 2)
-    if (basicShot[i].y < length) {
+    if (basicShot[i].y < 0) {
       basicShot.shift()
-    }    
+    }
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// shootingSound.play();
-//plays a sound when reseting
-//reseting the game
-
-
-
-//   //moves projectile
-
-//   if (circleX > width - circleR / 2 || circleX < 0 + circleR / 2) {
-//     shotDx *= -1;
-//   } else if (circleY > height - circleR / 2 || circleY < 0 + circleR / 2) {
-//     shotDy *= -1;
-//   }
-//   // keeps projectile inside the canvas
-
-
-//creating three seperate hit boxes around the plane image that adjust with size
-
-// function moveUntilHit() {
-//   if (isHit() === true) {
-//     canPlaneMove = false;
-//     canProjectileMove = false;
-//     shotDx = 0;
-
-//   } else if (isHit() === false) {
-//     moveRandomly();
+// function keyPressed() {
+//   if (keyCode === 70) {
+//     let alienValues = {
+//       x: alienX,
+//       y: alienY,
+//       dy: +1
+//     };
+//     alienLocation.push(alienValues)
 //   }
 // }
-//makes it so when the projectile hits the plane both it and plane stop moving until reset by the space bar
 
-// function isHit() {
-//   if (
-//     basicShotX > planeX - 19 * scalar &&
-//     basicShotX < planeX + 21 * scalar &&      //rectangle one
-//     circleY > planeY - 113 * scalar &&
-//     circleY < planeY + 114 * scalar
-//   ) {
-//     return true;
-//   } else if (
-//     basicShotX > planeX - 147 * scalar &&
-//     basicShotX < planeX + 148 * scalar &&     //rectangle two
-//     circleY > planeY - 49 * scalar &&
-//     circleY < planeY - 11 * scalar
-//   ) {
-//     return true;
-//   } else if (
-//     basicShotX > planeX - 47 * scalar &&
-//     basicShotX < planeX + 51 * scalar &&      //rectangle three
-//     circleY > planeY + 75 * scalar &&
-//     circleY < planeY + 102 * scalar
-//   ) {
-//     return true;
-//   } else {
-//     return false;
+// function moveAliens() {
+//   for (let i = 0; i < alienLocation.length; i++) {
+//     alienLocation[i].y += alienLocation[i].dy;
+//     noStroke()
+//     fill(0)
+//     image(alien, alienLocation[i].x, alienLocation[i].y, 100, 100)
+//     if (alienLocation[i].y < length - 100) {
+//       alienLocation.shift()
+//     }
 //   }
 // }
-//function that returns whether or not the projectile is touching one of the three hit boxes
-
-// function moveRandomly() {
-//   if (shotDx < 10 && shotDy < 10) {
-//     shotDx = random(shotDx - 5, shotDx + 5);
-//     shotDy = random(shotDy - 5, shotDy + 5);
-//   } else {
-//     shotDx = shotDx;
-//     shotDy = shotDy;
-//   }
-// }
-//changes the projectiles direction and speed randomly 

@@ -59,6 +59,7 @@ function setup() {
 
   planeX = width / 2;
   planeY = height / 1.1;
+
   alienX = width / 2;
   alienY = 100
 
@@ -83,16 +84,10 @@ function draw() {
   moveInsideCanvas();
   shoot()
 
-  image(alien, alienX, alienY, 100, 100)
+  image(alien, alienX, alienY, 50, 50)
   image(plane, planeX, planeY, plane.width * scalar, plane.height * scalar); //drawing the plane image
 }
-//all put inside the draw loop so the image keeps responding when input is continously given.
-
-
-
-
-
-
+//all put inside the draw loop so the image keeps responding when input is continously given
 
 function windowResized() {
   setup();
@@ -195,11 +190,13 @@ function keyPressed() {
     };
     basicShot.push(basicShotValues)
   }
-}
-
-function shoot() {
-  if (shotType === "basic shot") {
-    shootBasicShot()
+  else if (keyCode === 70) {
+    let alienValues = {
+      x: alienX,
+      y: alienY,
+      dy: 1
+    };
+    alienLocation.push(alienValues)
   }
 }
 
@@ -216,25 +213,21 @@ function shootBasicShot() {
   }
 }
 
-// function keyPressed() {
-//   if (keyCode === 70) {
-//     let alienValues = {
-//       x: alienX,
-//       y: alienY,
-//       dy: +1
-//     };
-//     alienLocation.push(alienValues)
-//   }
-// }
+function shoot() {
+  if (shotType === "basic shot") {
+    shootBasicShot()
+  }
+}
 
-// function moveAliens() {
-//   for (let i = 0; i < alienLocation.length; i++) {
-//     alienLocation[i].y += alienLocation[i].dy;
-//     noStroke()
-//     fill(0)
-//     image(alien, alienLocation[i].x, alienLocation[i].y, 100, 100)
-//     if (alienLocation[i].y < length - 100) {
-//       alienLocation.shift()
-//     }
-//   }
-// }
+function moveAliens() {
+  for (let i = 0; i < alienLocation.length; i++) {
+    alienLocation[i].y += alienLocation[i].dy;
+    image(alien, alienLocation[i].x, alienLocation[i].y, 100, 100)
+    
+    
+    // if (alienLocation[i].y < length - 100) {
+    //   alienLocation.shift()
+  }
+}
+
+

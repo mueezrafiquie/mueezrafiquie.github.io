@@ -1,7 +1,3 @@
-let alien1;
-let alien2;
-let alien3;
-
 let aliens = []
 
 function preload() {
@@ -11,23 +7,15 @@ function preload() {
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
-
-  aliens.push(new Alien(150, 150)); 
-  alien2 = new Alien(400, 150);
-  alien3 = new Alien(600, 150);
+  aliens.push(new Alien(width * 0.15, 150), new Alien(400, 150), new Alien(600, 150)); 
 }
-
 
 function draw() {
   background(0);
-
-  alien1.move();
-  alien2.move();
-  alien3.move();
+  moveAliens();
 }
 
 class Alien {
-
   constructor(x, y, dy) {
     this.x = x;
     this.y = y;
@@ -38,10 +26,15 @@ class Alien {
     this.x = this.x + random(-5, 5);
     this.y = this.y + random(0, 5);
     image(alienImage, this.x, this.y, 50, 50)
-    
-
   }
 }
 
 
-
+function moveAliens() {
+  for (let i = 0; i < aliens.length; i++) {
+    aliens[i].move();
+    if (aliens[i].y > 400) {
+      aliens.shift();
+    }
+  }
+}

@@ -12,7 +12,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
 
 
-  alien1 = new Alien(150, 150);
+  aliens.push(new Alien(150, 150)); 
   alien2 = new Alien(400, 150);
   alien3 = new Alien(600, 150);
 }
@@ -39,10 +39,7 @@ class Alien {
     this.y = this.y + random(0, 5);
     image(alienImage, this.x, this.y, 50, 50)
     
-    for (let i = 0; i < 5; i++) {
-      
 
-    }
   }
 }
 

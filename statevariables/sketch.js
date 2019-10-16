@@ -27,12 +27,14 @@ let shotType = "basic shot"
 let gameMode = "start"
 
 basicShot = [];
-alienLocation = [];
-
-let alienX;
-let alienY;
+let aliens = [];
 
 let shotDy;
+
+
+
+
+
 
 
 
@@ -42,8 +44,8 @@ function preload() {
 
   plane = loadImage("assets/plane.png");
   sky = loadImage("assets/skybackground.jpg");
-  alien = loadImage("assets/alien.png");
-  //loading images
+  alienImage = loadImage("assets/alien.png");
+    //loading images
 
   soundFormats("mp3");
   shootingSound = loadSound("assets/shootingsound.mp3");
@@ -53,15 +55,14 @@ function preload() {
 function setup() {
   createCanvas(windowWidth, windowHeight); //creating canvas
 
+  aliens.push(new Alien(width * random(0.05, 0.12), 150), new Alien(width * random(0.20, 0.30), 150), new Alien(width * random(0.35, 0.45), 150), new Alien(width * random(0.50, 0.60), 150), new Alien(width * random(0.70, 0.90), 150));
+
   shotDy = 5;
   // shotDy = random(-10, 10);
   //setting projectile speech to a random value between -10 and 10
 
   planeX = width / 2;
   planeY = height / 1.1;
-
-  alienX = width / 2;
-  alienY = 100
 
   imageMode(CENTER);
   //setting starting point for plane and centering its cordinate origin
@@ -77,16 +78,18 @@ function setup() {
 }
 //creating canvas and defining variables in setup()
 
+
+
 function draw() {
   image(sky, 0, 0, width * 2, height * 2);  //drawing background
-
-
   moveInsideCanvas();
-  shoot()
-
-  image(alien, alienX, alienY, 50, 50)
+  shoot();
+  moveAliens();
+  drawHitBox();
   image(plane, planeX, planeY, plane.width * scalar, plane.height * scalar); //drawing the plane image
 }
+
+
 //all put inside the draw loop so the image keeps responding when input is continously given
 
 function windowResized() {
@@ -104,6 +107,17 @@ function mouseWheel() {
   }
 }
 //adding mouseWheel function which will use the same scalar variable to control the size of the image
+
+
+
+
+
+
+
+
+
+
+
 
 function movePlane() {
   if (canPlaneMove === true) {
@@ -180,6 +194,14 @@ function drawHitBox() {
 
 
 
+
+
+
+
+
+
+
+
 function keyPressed() {
   if (keyCode === 32) {
     let basicShotValues = {
@@ -190,16 +212,7 @@ function keyPressed() {
     };
     basicShot.push(basicShotValues)
   }
-  else if (keyCode === 70) {
-    let alienValues = {
-      x: alienX,
-      y: alienY,
-      dy: 1
-    };
-    alienLocation.push(alienValues)
-  }
 }
-
 
 function shootBasicShot() {
   for (let i = 0; i < basicShot.length; i++) {
@@ -219,15 +232,48 @@ function shoot() {
   }
 }
 
-function moveAliens() {
-  for (let i = 0; i < alienLocation.length; i++) {
-    alienLocation[i].y += alienLocation[i].dy;
-    image(alien, alienLocation[i].x, alienLocation[i].y, 100, 100)
-    
-    
-    // if (alienLocation[i].y < length - 100) {
-    //   alienLocation.shift()
-  }
+
+
+function detectIfHit() {
+
 }
 
 
+
+
+
+
+class Alien {
+  constructor(x, y, dy) {
+    this.x = x;
+    this.y = y;
+  }
+
+  moveIndividualAliens() {
+    this.x = this.x + random(-1, 1);
+    this.y = this.y + random(0, 1);
+    imageMode(CENTER)
+    image(alienImage, this.x, this.y, 50, 50)
+  }
+
+  individualHitBox() {
+    noStroke()
+    fill(255)
+    rect(this.x - 27.5, this.y - 25, 53, 50)
+  }
+}
+
+function moveAliens() {
+  for (let i = 0; i < aliens.length; i++) {
+    aliens[i].moveIndividualAliens();
+    if (aliens[i].y > 400) {
+      aliens.shift();
+    }
+  }
+}
+
+function drawHitBox() {
+  for (let i = 0; i < aliens.length; i++) {
+    aliens[i].individualHitBox();
+  }
+}

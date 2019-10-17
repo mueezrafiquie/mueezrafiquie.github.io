@@ -235,7 +235,18 @@ function shoot() {
 
 
 function detectIfHit() {
-
+  for (let i = 0; i < basicShot.length; i++) {
+    for (let j = 0; j < aliens.length; j++) {
+      if (basicShot[i].x > aliens[i].x - 28 && 
+          basicShot[i].x < aliens[i].x + 25 &&
+          basicShot[i].y > aliens[i].y - 25 &&
+          basicShot[i].y < aliens[i].y + 25) {
+            console.log("yup")
+            return true
+          }
+    
+    }
+  }
 }
 
 
@@ -259,7 +270,7 @@ class Alien {
   individualHitBox() {
     noStroke()
     fill(255)
-    rect(this.x - 27.5, this.y - 25, 53, 50)
+    rect(this.x - 28, this.y - 25, 53, 50)
   }
 }
 

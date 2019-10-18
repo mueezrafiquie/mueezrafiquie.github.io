@@ -16,7 +16,8 @@ let canProjectileMove = true;
 //creating global variables to allow for the starting and stopping of the plane and projectile
 
 let plane;
-let scalar = 0.1;
+let scalar = 0.2;
+// let scalar = 0.1;
 let planeX;
 let planeY;
 //creating global variables for image
@@ -26,7 +27,8 @@ let planeY;
 let shotType = "basic shot"
 let gameMode = "start"
 
-basicShot = [];
+let basicShot = [];
+let doubleShot = [];
 let aliens = [];
 
 let shotDy;
@@ -55,7 +57,11 @@ function preload() {
 function setup() {
   createCanvas(windowWidth, windowHeight); //creating canvas
 
-  aliens.push(new Alien(width * random(0.05, 0.12), 150), new Alien(width * random(0.20, 0.30), 150), new Alien(width * random(0.35, 0.45), 150), new Alien(width * random(0.50, 0.60), 150), new Alien(width * random(0.70, 0.90), 150));
+  aliens.push(new Alien(width * random(0.05, 0.12), 150), 
+              new Alien(width * random(0.20, 0.30), 150), 
+              new Alien(width * random(0.35, 0.45), 150), 
+              new Alien(width * random(0.50, 0.60), 150), 
+              new Alien(width * random(0.70, 0.90), 150));
 
   shotDy = 5;
   // shotDy = random(-10, 10);
@@ -86,6 +92,7 @@ function draw() {
   shoot();
   moveAliens();
   drawHitBox();
+  detectIfHit();
   image(plane, planeX, planeY, plane.width * scalar, plane.height * scalar); //drawing the plane image
 }
 
@@ -166,7 +173,8 @@ function isInsideCanvas() {
     return "over west";
   } else if (planeY + 210 * scalar > height) {
     return "over south";
-  } else if (planeY - 210 * scalar < 325) {
+  } else if (planeY - 210 * scalar < height * 0.65) {   
+    // 325
     return "over north";
   } else {
     return true;
@@ -211,6 +219,14 @@ function keyPressed() {
       dy: -5
     };
     basicShot.push(basicShotValues)
+
+    let doubleShotValues = {
+      x: planeX,
+      y: planeY - 210 * scalar,
+      r: 5,
+      dy: -5
+    };
+    doubleShot.push(doubleShotValues)
   }
 }
 
@@ -226,11 +242,42 @@ function shootBasicShot() {
   }
 }
 
-function shoot() {
-  if (shotType === "basic shot") {
-    shootBasicShot()
+function shootDoubleShot() {
+  for (let i = 0; i < doubleShot.length; i++) {
+    doubleShot[i].y += doubleShot[i].dy;
+    noStroke()
+    fill(0)
+    ellipse(doubleShot[i].x - 2, doubleShot[i].y, doubleShot[i].r * 2, doubleShot[i].r * 2)
+    ellipse(doubleShot[i].x + 2, doubleShot[i].y, doubleShot[i].r * 2, doubleShot[i].r * 2)
+    if (doubleShot[i].y < 0) {
+      doubleShot.shift()
+    }
   }
 }
+
+function shoot() {
+  if (shotType === "basic shot") {
+    shootBasicShot();
+  }
+  else if (shotType === "double shot") {
+    shootDoubleShot();
+  
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -244,15 +291,13 @@ function detectIfHit() {
             console.log("yup")
             return true
           }
-    
+      else {
+        console.log("nope")
+        return false
+      }
     }
   }
 }
-
-
-
-
-
 
 class Alien {
   constructor(x, y, dy) {
@@ -269,7 +314,7 @@ class Alien {
 
   individualHitBox() {
     noStroke()
-    fill(255)
+    noFill()
     rect(this.x - 28, this.y - 25, 53, 50)
   }
 }
@@ -277,7 +322,7 @@ class Alien {
 function moveAliens() {
   for (let i = 0; i < aliens.length; i++) {
     aliens[i].moveIndividualAliens();
-    if (aliens[i].y > 400) {
+    if (aliens[i].y > height) {
       aliens.shift();
     }
   }

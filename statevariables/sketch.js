@@ -11,18 +11,15 @@
 
 
 
-let canPlaneMove = true;
-let canProjectileMove = true;
-//creating global variables to allow for the starting and stopping of the plane and projectile
+let timeBetweenWaves;
+let lastTimeWaveWasSent;
 
 let plane;
-let scalar = 0.2;
-// let scalar = 0.1;
 let planeX;
 let planeY;
-//creating global variables for image
-
-
+let canPlaneMove = true;
+let scalar = 0.1;
+// let scalar = 0.2;
 
 let shotType = "basic shot"
 let gameMode = "start"
@@ -30,8 +27,6 @@ let gameMode = "start"
 let basicShot = [];
 let doubleShot = [];
 let aliens = [];
-
-let shotDy;
 
 
 
@@ -47,42 +42,33 @@ function preload() {
   plane = loadImage("assets/plane.png");
   sky = loadImage("assets/skybackground.jpg");
   alienImage = loadImage("assets/alien.png");
-    //loading images
+  //loading images
 
   soundFormats("mp3");
   shootingSound = loadSound("assets/shootingsound.mp3");
   //loading sounds
 }
 
+
+//creating canvas and defining variables in setup()
 function setup() {
   createCanvas(windowWidth, windowHeight); //creating canvas
 
-  aliens.push(new Alien(width * random(0.05, 0.12), 150), 
-              new Alien(width * random(0.20, 0.30), 150), 
-              new Alien(width * random(0.35, 0.45), 150), 
-              new Alien(width * random(0.50, 0.60), 150), 
-              new Alien(width * random(0.70, 0.90), 150));
+  createNewAliens();
 
-  shotDy = 5;
-  // shotDy = random(-10, 10);
-  //setting projectile speech to a random value between -10 and 10
+  timeBetweenWaves = 2000;
+  lastTimeWaveWasSent = 0;
+
 
   planeX = width / 2;
   planeY = height / 1.1;
 
   imageMode(CENTER);
-  //setting starting point for plane and centering its cordinate origin
 
-  canPlaneMove = true
-
-  // shotX = planeX;
-  // shotY = planeY - 210 * scalar;
-  // shotR = 30;
-  //defining projectile dimensions
+  canPlaneMove = true;
 
   shootingSound.setVolume(0.2); //setting a volume for reset sound
 }
-//creating canvas and defining variables in setup()
 
 
 
@@ -90,9 +76,10 @@ function draw() {
   image(sky, 0, 0, width * 2, height * 2);  //drawing background
   moveInsideCanvas();
   shoot();
+  sendAlienWaves()
   moveAliens();
   drawHitBox();
-  detectIfHit();
+  detectIfHitAndDestroyAlien();
   image(plane, planeX, planeY, plane.width * scalar, plane.height * scalar); //drawing the plane image
 }
 
@@ -173,7 +160,7 @@ function isInsideCanvas() {
     return "over west";
   } else if (planeY + 210 * scalar > height) {
     return "over south";
-  } else if (planeY - 210 * scalar < height * 0.65) {   
+  } else if (planeY - 210 * scalar < height * 0.65) {
     // 325
     return "over north";
   } else {
@@ -247,9 +234,9 @@ function shootDoubleShot() {
     doubleShot[i].y += doubleShot[i].dy;
     noStroke()
     fill(0)
-    ellipse(doubleShot[i].x - 2, doubleShot[i].y, doubleShot[i].r * 2, doubleShot[i].r * 2)
-    ellipse(doubleShot[i].x + 2, doubleShot[i].y, doubleShot[i].r * 2, doubleShot[i].r * 2)
-    if (doubleShot[i].y < 0) {
+    ellipse(doubleShot[i].x - 5, doubleShot[i].y, doubleShot[i].r * 2, doubleShot[i].r * 2)
+    ellipse(doubleShot[i].x + 5, doubleShot[i].y, doubleShot[i].r * 2, doubleShot[i].r * 2)
+    if (doubleShot[i].y < 100) {
       doubleShot.shift()
     }
   }
@@ -261,7 +248,7 @@ function shoot() {
   }
   else if (shotType === "double shot") {
     shootDoubleShot();
-  
+
   }
 }
 
@@ -281,22 +268,37 @@ function shoot() {
 
 
 
-function detectIfHit() {
-  for (let i = 0; i < basicShot.length; i++) {
-    for (let j = 0; j < aliens.length; j++) {
-      if (basicShot[i].x > aliens[i].x - 28 && 
-          basicShot[i].x < aliens[i].x + 25 &&
-          basicShot[i].y > aliens[i].y - 25 &&
-          basicShot[i].y < aliens[i].y + 25) {
-            console.log("yup")
-            return true
-          }
-      else {
-        console.log("nope")
-        return false
+function detectIfHitAndDestroyAlien() {
+  if (shotType === "basic shot") {
+    for (let i = 0; i < basicShot.length; i++) {
+      for (let j = 0; j < aliens.length; j++) {
+        if (basicShot[i].x > aliens[j].x - 28 &&
+          basicShot[i].x < aliens[j].x + 25 &&
+          basicShot[i].y > aliens[j].y - 25 &&
+          basicShot[i].y < aliens[j].y + 25) {
+
+          // basicShot.splice(i, 1);
+          aliens.splice(j, 1);
+        }
+
       }
     }
   }
+  // else if (shotType === "double shot") {
+  //   for (let i = 0; i < basicShot.length; i++) {
+  //     for (let j = 0; j < aliens.length; j++) {
+  //       if (basicShot[i].x > aliens[j].x - 28 &&
+  //         basicShot[i].x < aliens[j].x + 25 &&
+  //         basicShot[i].y > aliens[j].y - 25 &&
+  //         basicShot[i].y < aliens[j].y + 25) {
+  //         console.log("yup")
+  //       }
+  //       else {
+  //         console.log("nope")
+  //       }
+  //     }
+  //   }
+  // }
 }
 
 class Alien {
@@ -319,6 +321,14 @@ class Alien {
   }
 }
 
+function createNewAliens() {
+  aliens.push(new Alien(width * random(0.05, 0.12), 150),
+    new Alien(width * random(0.20, 0.30), 150),
+    new Alien(width * random(0.35, 0.45), 150),
+    new Alien(width * random(0.50, 0.60), 150),
+    new Alien(width * random(0.70, 0.90), 150));
+}
+
 function moveAliens() {
   for (let i = 0; i < aliens.length; i++) {
     aliens[i].moveIndividualAliens();
@@ -327,6 +337,15 @@ function moveAliens() {
     }
   }
 }
+
+function sendAlienWaves() {
+  if (millis() >= lastTimeWaveWasSent + timeBetweenWaves) {
+    createNewAliens()
+    moveAliens()
+    lastTimeWaveWasSent = millis();
+  }
+}
+
 
 function drawHitBox() {
   for (let i = 0; i < aliens.length; i++) {

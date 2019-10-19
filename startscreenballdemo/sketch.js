@@ -34,6 +34,7 @@ function draw() {
 
 
 function showMenu() {
+  background(255)
   //rectangle button
   rectMode(CENTER);
   fill(255, 0, 0, 125)

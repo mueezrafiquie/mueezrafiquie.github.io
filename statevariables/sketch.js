@@ -18,8 +18,8 @@ let plane;
 let planeX;
 let planeY;
 let canPlaneMove = true;
-let scalar = 0.1;
-// let scalar = 0.2;
+// let scalar = 0.1;
+let scalar = 0.2;
 
 let shotType = "basic shot"
 let gameMode = "start"
@@ -56,7 +56,7 @@ function setup() {
 
   createNewAliens();
 
-  timeBetweenWaves = 2000;
+  timeBetweenWaves = 5000;
   lastTimeWaveWasSent = 0;
 
 

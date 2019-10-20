@@ -75,7 +75,6 @@ function draw() {
 function runGame() {
   image(sky, 0, 0, width * 2, height * 2); //drawing background
   moveInsideCanvas();
-  movePlane()
   shoot();
   sendAlienWaves();
   moveAliens();
@@ -455,15 +454,14 @@ function detectIfPlaneHitByAlien() {
       aliens[i].y + 25 >= planeY - 190 * scalar &&
       aliens[i].y + 25 <= planeY + 60 * scalar
     ) {
-      gameMode = "game over"
-    }
-    else if (
+      gameMode = "game over";
+    } else if (
       aliens[i].x + 25 >= planeX - 125 * scalar &&
       aliens[i].x - 28 <= planeX + 130 * scalar &&
       aliens[i].y + 25 >= planeY + 1 * scalar &&
       aliens[i].y - 25 <= planeY + 201 * scalar
     ) {
-      gameMode = "game over"
+      gameMode = "game over";
     }
   }
 }

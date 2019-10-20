@@ -75,14 +75,15 @@ function draw() {
 function runGame() {
   image(sky, 0, 0, width * 2, height * 2); //drawing background
   moveInsideCanvas();
+  movePlane()
   shoot();
-
   sendAlienWaves();
   moveAliens();
-  drawHitBox();
+  // drawHitBox();
+  // drawPlaneHitBox();
   detectIfHitByBulletAndDestroyAlien();
+  detectIfPlaneHitByAlien();
   image(plane, planeX, planeY, plane.width * scalar, plane.height * scalar); //drawing the plane image
-  drawPlaneHitBox();
 }
 
 function runEasyModeGame() {
@@ -435,32 +436,37 @@ function detectIfHitByBulletAndDestroyAlien() {
   // }
 }
 
-  //       if  > aliens[j].x - 28 &&
-  //          < aliens[j].x + 25 &&
-  //         > aliens[j].y - 25 &&
-  //          < aliens[j].y + 25) {
-
+//       if  > aliens[i].x - 28 &&
+//          < aliens[i].x + 25 &&
+//         > aliens[i].y - 25 &&
+//          < aliens[i].y + 25) {
 
 function drawPlaneHitBox() {
-  
-  fill(255)
+  fill(255);
   rect(planeX - 20 * scalar, planeY - 190 * scalar, 40 * scalar, 250 * scalar);
   rect(planeX - 125 * scalar, planeY + 1 * scalar, 255 * scalar, 200 * scalar);
-
 }
-
 
 function detectIfPlaneHitByAlien() {
   for (let i = 0; i < aliens.length; i++) {
-    if (planeX - 20 * scalar) {
+    if (
+      aliens[i].x + 25 >= planeX - 20 * scalar &&
+      aliens[i].x - 28 <= planeX + 20 * scalar &&
+      aliens[i].y + 25 >= planeY - 190 * scalar &&
+      aliens[i].y + 25 <= planeY + 60 * scalar
+    ) {
+      gameMode = "game over"
+    }
+    else if (
+      aliens[i].x + 25 >= planeX - 125 * scalar &&
+      aliens[i].x - 28 <= planeX + 130 * scalar &&
+      aliens[i].y + 25 >= planeY + 1 * scalar &&
+      aliens[i].y - 25 <= planeY + 201 * scalar
+    ) {
+      gameMode = "game over"
     }
   }
 }
-
-
-
-
-
 
 class Alien {
   constructor(x, y) {

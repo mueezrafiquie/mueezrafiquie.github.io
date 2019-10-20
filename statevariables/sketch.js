@@ -1,6 +1,6 @@
-// Interactive Scene
+// State Variables and Arrays Assignment
 // Mueez Rafiquie
-// Sept 14, 2019
+// Sept 21, 2019
 //
 //The objective of this game is the avoid the projetile by moving the plane around with the WASD keys. If you get hit, simply press the space bar and the game
 //will reset. You can additionally use the up and down arrows as well as a mousewheel or trackpad to change the size of the image.
@@ -19,7 +19,7 @@ let canPlaneMove = true;
 let scalar = 0.2;
 
 let shotType = "basic shot";
-let gameMode = "main menu";
+let gameMode = "easy mode";
 
 let basicShot = [];
 let doubleShot = [];
@@ -42,7 +42,6 @@ function setup() {
 
   createNewAliens();
 
-  timeBetweenWaves = 7000;
   lastTimeWaveWasSent = 0;
 
   planeX = width / 2;
@@ -60,58 +59,198 @@ function draw() {
   if (gameMode === "main menu") {
     showMenu();
     checkIfButtonClicked();
-  }
-  else if (gameMode === "easy mode") {
+  } else if (gameMode === "easy mode") {
     runEasyModeGame();
+  } else if (gameMode === "hard mode") {
+    runHardModeGame();
+  } else if (gameMode === "instructions menu") {
+    showInstructions();
+    checkIfBackButtonClicked();
+  } else if (gameMode === "game over") {
+    showGameOverScreen();
+    checkIfAResetButtonsClicked();
   }
 }
 
-function runEasyModeGame() {
+function runGame() {
   image(sky, 0, 0, width * 2, height * 2); //drawing background
   moveInsideCanvas();
   shoot();
+
   sendAlienWaves();
   moveAliens();
   drawHitBox();
-  detectIfHitAndDestroyAlien();
+  detectIfHitByBulletAndDestroyAlien();
   image(plane, planeX, planeY, plane.width * scalar, plane.height * scalar); //drawing the plane image
+  drawPlaneHitBox();
+}
+
+function runEasyModeGame() {
+  timeBetweenWaves = 7000;
+  runGame();
+}
+
+function runHardModeGame() {
+  //lowering time between waves to increase difficulty
+  timeBetweenWaves = 2000;
+  runGame();
 }
 
 function showMenu() {
-  background(255);
+  background(200);
   //rectangle button
   rectMode(CENTER);
-  fill(255, 0, 0, 125);
-  rect(width / 2, height / 2 - 100, 400, 100);
+  fill(0, 255, 0, 125);
+  rect(width / 2, height / 2 - 350, 400, 150);
   textAlign(CENTER, CENTER);
   textSize(50);
   fill(0);
-  text("Easy Mode", width / 2, height / 2 - 100);
+  text("Easy Mode", width / 2, height / 2 - 350);
+
+  fill(255, 0, 0, 125);
+  rect(width / 2, height / 2, 400, 150);
+  fill(0);
+  text("Hard Mode", width / 2, height / 2);
 
   //circle button
-  fill(255, 0, 0, 125);
-  rect(width / 2, height / 2 + 100, 400, 100);
+  fill(0, 0, 0, 50);
+  rect(width / 2, height / 2 + 350, 400, 150);
   fill(0);
-  text("Circle", width / 2, height / 2 + 100);
+  text("How to Play", width / 2, height / 2 + 350);
 }
 
 function checkIfButtonClicked() {
-  if (mouseIsPressed) {
-    if (
-      mouseX > width / 2 - 200 &&
-      mouseX < width / 2 + 200 &&
-      mouseY > height / 2 - 100 - 75 &&
-      mouseY < height / 2 - 100 + 75
-    ) {
+  if (
+    mouseX > width / 2 - 200 &&
+    mouseX < width / 2 + 200 &&
+    mouseY > height / 2 - 350 - 75 &&
+    mouseY < height / 2 - 350 + 75
+  ) {
+    fill(255);
+    text("Easy Mode", width / 2, height / 2 - 350);
+    if (mouseIsPressed) {
       gameMode = "easy mode";
     }
-    if (
-      mouseX > width / 2 - 200 &&
-      mouseX < width / 2 + 200 &&
-      mouseY > height / 2 + 100 - 75 &&
-      mouseY < height / 2 + 100 + 75
-    ) {
+  }
+  if (
+    mouseX > width / 2 - 200 &&
+    mouseX < width / 2 + 200 &&
+    mouseY > height / 2 - 75 &&
+    mouseY < height / 2 + 75
+  ) {
+    fill(255);
+    text("Hard Mode", width / 2, height / 2);
+    if (mouseIsPressed) {
+      gameMode = "hard mode";
+    }
+  }
+  if (
+    mouseX > width / 2 - 200 &&
+    mouseX < width / 2 + 200 &&
+    mouseY > height / 2 + 350 - 75 &&
+    mouseY < height / 2 + 350 + 75
+  ) {
+    fill(255);
+    text("How to Play", width / 2, height / 2 + 350);
+    if (mouseIsPressed) {
+      gameMode = "instructions menu";
+    }
+  }
+}
+
+function showInstructions() {
+  background(200);
+  rectMode(CENTER);
+  textAlign(CENTER, CENTER);
+
+  textSize(100);
+  fill(0);
+  text("Instructions", width / 2, height / 2 - 350);
+
+  textSize(30);
+  fill(0);
+  text(
+    "Use the WASD keys to control the plane and the Space Button to shoot",
+    width / 2,
+    height / 2 - 150
+  );
+  text(
+    "Aliens will come down in waves to try and destroy you",
+    width / 2,
+    height / 2 - 80
+  );
+  text("Easy: Seven Seconds Per Wave", width / 2 - 300, height / 2 - 30);
+  text("Hard: Two Seconds Per Wave", width / 2 + 300, height / 2 - 30);
+  text(
+    "If you are hit by an Alien or one reaches the bottom, it's GAME OVER",
+    width / 2,
+    height / 2 + 100
+  );
+
+  textSize(80);
+  fill(255);
+  text("Back", 250, 125);
+}
+
+function checkIfBackButtonClicked() {
+  if (
+    mouseX > 250 - 200 &&
+    mouseX < 250 + 200 &&
+    mouseY > 125 - 75 &&
+    mouseY < 125 + 75
+  ) {
+    fill(0, 255, 0, 125);
+    text("Back", 250, 125);
+    if (mouseIsPressed) {
+      gameMode = "main menu";
+    }
+  }
+}
+
+function showGameOverScreen() {
+  background(0);
+  rectMode(CENTER);
+  textAlign(CENTER, CENTER);
+
+  textSize(200);
+  fill(255, 0, 0);
+  text("GAME OVER", width / 2, height / 2);
+
+  fill(0, 0, 0, 50);
+  rect(width / 2 - 400, height / 2 + 350, 400, 150);
+  textSize(80);
+  fill(255);
+  text("Main Menu", width / 2 - 400, height / 2 + 350);
+
+  fill(0, 0, 0, 50);
+  rect(width / 2 + 400, height / 2 + 350, 400, 150);
+  textSize(80);
+  fill(255);
+  text("Play Again", width / 2 + 400, height / 2 + 350);
+}
+
+function checkIfAResetButtonsClicked() {
+  if (
+    mouseX > width / 2 + 400 - 200 &&
+    mouseX < width / 2 + 400 + 200 &&
+    mouseY > height / 2 + 350 - 75 &&
+    mouseY < height / 2 + 350 + 75
+  ) {
+    fill(0, 255, 0, 125);
+    text("Play Again", width / 2 + 400, height / 2 + 350);
+    if (mouseIsPressed) {
       gameMode = "easy mode";
+    }
+  } else if (
+    mouseX > width / 2 - 400 - 200 &&
+    mouseX < width / 2 - 400 + 200 &&
+    mouseY > height / 2 + 350 - 75 &&
+    mouseY < height / 2 + 350 + 75
+  ) {
+    fill(0, 255, 0, 125);
+    text("Main Menu", width / 2 - 400, height / 2 + 350);
+    if (mouseIsPressed) {
+      gameMode = "main menu";
     }
   }
 }
@@ -198,14 +337,6 @@ function moveInsideCanvas() {
   }
 }
 
-function drawHitBox() {
-  noFill();
-  noStroke();
-  rect(planeX - 20 * scalar, planeY - 114 * scalar, 40 * scalar, 227 * scalar);
-  rect(planeX - 148 * scalar, planeY - 50 * scalar, 295 * scalar, 40 * scalar);
-  rect(planeX - 48 * scalar, planeY + 76 * scalar, 98 * scalar, 25 * scalar);
-}
-
 function keyPressed() {
   if (keyCode === 32) {
     let basicShotValues = {
@@ -274,7 +405,7 @@ function shoot() {
   }
 }
 
-function detectIfHitAndDestroyAlien() {
+function detectIfHitByBulletAndDestroyAlien() {
   if (shotType === "basic shot") {
     for (let i = 0; i < basicShot.length; i++) {
       for (let j = 0; j < aliens.length; j++) {
@@ -293,10 +424,7 @@ function detectIfHitAndDestroyAlien() {
   // else if (shotType === "double shot") {
   //   for (let i = 0; i < basicShot.length; i++) {
   //     for (let j = 0; j < aliens.length; j++) {
-  //       if (basicShot[i].x > aliens[j].x - 28 &&
-  //         basicShot[i].x < aliens[j].x + 25 &&
-  //         basicShot[i].y > aliens[j].y - 25 &&
-  //         basicShot[i].y < aliens[j].y + 25) {
+
   //         console.log("yup")
   //       }
   //       else {
@@ -307,8 +435,35 @@ function detectIfHitAndDestroyAlien() {
   // }
 }
 
+  //       if  > aliens[j].x - 28 &&
+  //          < aliens[j].x + 25 &&
+  //         > aliens[j].y - 25 &&
+  //          < aliens[j].y + 25) {
+
+
+function drawPlaneHitBox() {
+  
+  fill(255)
+  rect(planeX - 20 * scalar, planeY - 190 * scalar, 40 * scalar, 250 * scalar);
+  rect(planeX - 125 * scalar, planeY + 1 * scalar, 255 * scalar, 200 * scalar);
+
+}
+
+
+function detectIfPlaneHitByAlien() {
+  for (let i = 0; i < aliens.length; i++) {
+    if (planeX - 20 * scalar) {
+    }
+  }
+}
+
+
+
+
+
+
 class Alien {
-  constructor(x, y, dy) {
+  constructor(x, y) {
     this.x = x;
     this.y = y;
   }

@@ -2,15 +2,20 @@
 // Mueez Rafiquie
 // Sept 21, 2019
 //
-//The objective of this game is the avoid the projetile by moving the plane around with the WASD keys. If you get hit, simply press the space bar and the game
-//will reset. You can additionally use the up and down arrows as well as a mousewheel or trackpad to change the size of the image.
 //
-//Extra for Experts Additions: In this project I added a sound component which is heard when you press the space bar to reset, used the windowResized() function
-//to allow the game to stay playable with a change in window size, used the mouseWheel() function to change the size of the plane with the mousewheel.
+//
+//
+//
+//
 
+
+//Global Variables
+
+//time variables
 let timeBetweenWaves;
 let lastTimeWaveWasSent;
 
+//plane variables
 let plane;
 let planeX;
 let planeY;
@@ -18,44 +23,50 @@ let canPlaneMove = true;
 // let scalar = 0.1;
 let scalar = 0.2;
 
+//state variables: one that changes the type of bullets the plane shoots and the other
+//which switches the game between screens
 let shotType = "basic shot";
-let gameMode = "easy mode";
+let gameMode = "game over";
 
+//arrays to store the data from the objects being used to push information into them
 let basicShot = [];
 let doubleShot = [];
 let aliens = [];
 
+//running score which will get reset when replayed
+let score = 0;
+
+//Using the preload function to loading items before hand so there is no delay in displaying them
 function preload() {
+  //loading images
   plane = loadImage("assets/plane.png");
   sky = loadImage("assets/skybackground.jpg");
   alienImage = loadImage("assets/alien.png");
-  //loading images
 
+  //loading sounds
   soundFormats("mp3");
   shootingSound = loadSound("assets/shootingsound.mp3");
-  //loading sounds
 }
 
 //creating canvas and defining variables in setup()
 function setup() {
-  createCanvas(windowWidth, windowHeight); //creating canvas
-
+  //creating canvas
+  createCanvas(windowWidth, windowHeight);
+  //pushing the starting aliens into the aliens array
   createNewAliens();
 
+  //defining variables
   lastTimeWaveWasSent = 0;
-
   planeX = width / 2;
   planeY = height / 1.1;
-
-  imageMode(CENTER);
-
   canPlaneMove = true;
-
-  shootingSound.setVolume(0.2); //setting a volume for reset sound
+  //setting a volume for shooting sound
+  shootingSound.setVolume(0.2);
 }
 
-//all put inside the draw loop so the image keeps responding when input is continously given
+//all put inside the draw loop so it is constantly being drawn keeps responding when input is continously given
 function draw() {
+  //using state variables to transition through different game screens and modes
   if (gameMode === "main menu") {
     showMenu();
     checkIfButtonClicked();
@@ -72,33 +83,51 @@ function draw() {
   }
 }
 
+//combining all the function necessary to run the game
 function runGame() {
-  image(sky, 0, 0, width * 2, height * 2); //drawing background
+  //drawing background
+  image(sky, 0, 0, width * 2, height * 2);
+
+  //displays score
+  showScore();
+
+  //enabling plane to move and shoot
   moveInsideCanvas();
   shoot();
+
+  //moving aliens down the screen in waves
   sendAlienWaves();
   moveAliens();
-  // drawHitBox();
-  // drawPlaneHitBox();
+
+  //detecting if an alien is his by a bullet or if the plane is hit by and alien
   detectIfHitByBulletAndDestroyAlien();
   detectIfPlaneHitByAlien();
-  image(plane, planeX, planeY, plane.width * scalar, plane.height * scalar); //drawing the plane image
+
+  //drawing the plane image
+  image(plane, planeX, planeY, plane.width * scalar, plane.height * scalar);
+
+  //these last two functions were used to help create the collision detection system but are not necessary for the game to run
+  // drawHitBox();
+  // drawPlaneHitBox();  
 }
 
+//running easy version of game
 function runEasyModeGame() {
   timeBetweenWaves = 7000;
   runGame();
 }
 
+//running hard version of game
 function runHardModeGame() {
   //lowering time between waves to increase difficulty
   timeBetweenWaves = 2000;
   runGame();
 }
 
+//displaying main menu
 function showMenu() {
   background(200);
-  //rectangle button
+  //easy Mode button
   rectMode(CENTER);
   fill(0, 255, 0, 125);
   rect(width / 2, height / 2 - 350, 400, 150);
@@ -107,18 +136,21 @@ function showMenu() {
   fill(0);
   text("Easy Mode", width / 2, height / 2 - 350);
 
+  //hard Mode button
   fill(255, 0, 0, 125);
   rect(width / 2, height / 2, 400, 150);
   fill(0);
   text("Hard Mode", width / 2, height / 2);
 
-  //circle button
+  //instructions button
   fill(0, 0, 0, 50);
   rect(width / 2, height / 2 + 350, 400, 150);
   fill(0);
   text("How to Play", width / 2, height / 2 + 350);
 }
 
+//checking if a button on the main meny is clicked
+//changes colour when mouse is hovered over the button and changes gamemode depending on what's clicked
 function checkIfButtonClicked() {
   if (
     mouseX > width / 2 - 200 &&
@@ -126,6 +158,7 @@ function checkIfButtonClicked() {
     mouseY > height / 2 - 350 - 75 &&
     mouseY < height / 2 - 350 + 75
   ) {
+    //easy mode button
     fill(255);
     text("Easy Mode", width / 2, height / 2 - 350);
     if (mouseIsPressed) {
@@ -138,6 +171,7 @@ function checkIfButtonClicked() {
     mouseY > height / 2 - 75 &&
     mouseY < height / 2 + 75
   ) {
+    //hard mode button
     fill(255);
     text("Hard Mode", width / 2, height / 2);
     if (mouseIsPressed) {
@@ -150,6 +184,7 @@ function checkIfButtonClicked() {
     mouseY > height / 2 + 350 - 75 &&
     mouseY < height / 2 + 350 + 75
   ) {
+    //instructions button
     fill(255);
     text("How to Play", width / 2, height / 2 + 350);
     if (mouseIsPressed) {
@@ -158,6 +193,7 @@ function checkIfButtonClicked() {
   }
 }
 
+//displaying instructions screen
 function showInstructions() {
   background(200);
   rectMode(CENTER);
@@ -167,6 +203,7 @@ function showInstructions() {
   fill(0);
   text("Instructions", width / 2, height / 2 - 350);
 
+  //writing out instructions
   textSize(30);
   fill(0);
   text(
@@ -184,14 +221,22 @@ function showInstructions() {
   text(
     "If you are hit by an Alien or one reaches the bottom, it's GAME OVER",
     width / 2,
-    height / 2 + 100
+    height / 2 + 50
+  );
+  text(
+    "To access the main menu at any time, press the m key",
+    width / 2,
+    height / 2 + 170
   );
 
+  //back to main menu button
   textSize(80);
   fill(255);
   text("Back", 250, 125);
 }
 
+//displaying a "back button" which changes colour when hovered over and sends you back to the
+//main menu if clicked
 function checkIfBackButtonClicked() {
   if (
     mouseX > 250 - 200 &&
@@ -207,21 +252,32 @@ function checkIfBackButtonClicked() {
   }
 }
 
+//displaying the screen which will come up when you lose
 function showGameOverScreen() {
   background(0);
   rectMode(CENTER);
   textAlign(CENTER, CENTER);
 
+  //game over text
   textSize(200);
   fill(255, 0, 0);
-  text("GAME OVER", width / 2, height / 2);
+  text("GAME OVER", width / 2, height / 4);
 
+  //displaying score
+  fill(0, 0, 0, 50);
+  rect(width / 2 - 400, height / 2 + 350, 400, 150);
+  textSize(80);
+  fill(255);
+  text("Score: " + score, width / 2, height / 2);
+
+  //main menu button
   fill(0, 0, 0, 50);
   rect(width / 2 - 400, height / 2 + 350, 400, 150);
   textSize(80);
   fill(255);
   text("Main Menu", width / 2 - 400, height / 2 + 350);
 
+  //play again button
   fill(0, 0, 0, 50);
   rect(width / 2 + 400, height / 2 + 350, 400, 150);
   textSize(80);
@@ -229,6 +285,7 @@ function showGameOverScreen() {
   text("Play Again", width / 2 + 400, height / 2 + 350);
 }
 
+//checking if buttons on the game over screen are clicked, changing colours when hovered over
 function checkIfAResetButtonsClicked() {
   if (
     mouseX > width / 2 + 400 - 200 &&
@@ -236,9 +293,11 @@ function checkIfAResetButtonsClicked() {
     mouseY > height / 2 + 350 - 75 &&
     mouseY < height / 2 + 350 + 75
   ) {
+    //play again button
     fill(0, 255, 0, 125);
     text("Play Again", width / 2 + 400, height / 2 + 350);
     if (mouseIsPressed) {
+      score = 0;
       gameMode = "easy mode";
     }
   } else if (
@@ -247,19 +306,32 @@ function checkIfAResetButtonsClicked() {
     mouseY > height / 2 + 350 - 75 &&
     mouseY < height / 2 + 350 + 75
   ) {
+    //main menu button
     fill(0, 255, 0, 125);
     text("Main Menu", width / 2 - 400, height / 2 + 350);
     if (mouseIsPressed) {
+      score = 0;
       gameMode = "main menu";
     }
   }
 }
 
+//displaying score with the score variable while the game is running
+function showScore() {
+  rectMode(CENTER);
+  textAlign(CENTER, CENTER);
+  textSize(80);
+  fill(0);
+  text(score, width - 90, 90);
+}
+
+//allowing the window to be resized
 function windowResized() {
   setup();
 }
-//allows canvas size to change while keeping the game playable
 
+//adding mouseWheel function which will use the same scalar variable to control the size of the plane
+//this doesn't have a practical use in the game yet but will in a future version
 function mouseWheel() {
   if (canPlaneMove === true) {
     if (event.delta > 0) {
@@ -269,35 +341,39 @@ function mouseWheel() {
     }
   }
 }
-//adding mouseWheel function which will use the same scalar variable to control the size of the image
 
+//allowing plane to move within a defined space in the canvas
 function movePlane() {
+  //same application as the mousewheel function but with arrow keys
   if (canPlaneMove === true) {
     if (keyCode === UP_ARROW) {
       scalar *= 1.02;
     } else if (keyCode === DOWN_ARROW) {
       scalar /= 1.02;
     }
-    //using a multiplying factor to change size of image
-
+    //changing x and y cords with WASD keys to move image
     if (keyIsDown(87)) {
       imageMode(CENTER);
       image(sky, 0, 0, width * 2, height * 2); //w
+      showScore();
       planeY -= 10;
     } else if (keyIsDown(65)) {
       image(sky, 0, 0, width * 2, height * 2); //a
+      showScore();
       planeX -= 10;
     } else if (keyIsDown(83)) {
       image(sky, 0, 0, width * 2, height * 2); //s
+      showScore();
       planeY += 10;
     } else if (keyIsDown(68)) {
       image(sky, 0, 0, width * 2, height * 2); //d
+      showScore();
       planeX += 10;
     }
   }
 }
-//changing x and y cords with WASD keys to move image
 
+//changes the x or y cord to move the plane back toward the inside of canvas when it hits the edge to keep it in
 function keepInsideCanvas() {
   if (keyIsPressed && isInsideCanvas() === "over west") {
     planeX += 10;
@@ -309,8 +385,8 @@ function keepInsideCanvas() {
     planeY -= 10;
   }
 }
-//changes the x or y cord to move the plane back toward the inside of canvas when it hits the edge to keep it in
 
+//checks if the plane is inside canvas and if not returns which direction it is over
 function isInsideCanvas() {
   if (planeX + 150 * scalar > width) {
     return "over east";
@@ -319,25 +395,26 @@ function isInsideCanvas() {
   } else if (planeY + 210 * scalar > height) {
     return "over south";
   } else if (planeY - 210 * scalar < height * 0.65) {
-    // 325
     return "over north";
   } else {
     return true;
   }
 }
-//checks if is image is inside canvas and if not returns which direction it is over
 
+//combining the two plane movement functions
 function moveInsideCanvas() {
   if (keyIsPressed && isInsideCanvas() === true) {
-    movePlane();
     //controlling the image with WASD keys
+    movePlane();
   } else {
-    keepInsideCanvas();
     //keeping image inside cavas if at the edge
+    keepInsideCanvas();
   }
 }
 
+//allowing plane to shoot
 function keyPressed() {
+  //creating objects in which information about the bullets is stored to be pushed into arrays
   if (keyCode === 32) {
     let basicShotValues = {
       x: planeX,
@@ -355,8 +432,15 @@ function keyPressed() {
     };
     doubleShot.push(doubleShotValues);
   }
+  //allowing the menu to be accessed at any time by using the "m" key
+  else if (keyCode === 77) {
+    gameMode = "main menu";
+    score = 0;
+    aliens = [];
+  }
 }
 
+//looping through the basicShot array to create a bullet for every value entered when the space key is hit
 function shootBasicShot() {
   for (let i = 0; i < basicShot.length; i++) {
     basicShot[i].y += basicShot[i].dy;
@@ -368,12 +452,15 @@ function shootBasicShot() {
       basicShot[i].r * 2,
       basicShot[i].r * 2
     );
+    //getting rid of bullets once they are off the screen
     if (basicShot[i].y < 0) {
       basicShot.shift();
     }
   }
 }
 
+//looping through the doubleShot array to create a bullet for every value entered when the space key is hit
+//DOUBLE SHOT BULLETS CANNOT BE DETECTED YET THEY WILL NOT KILL THE ALIENS
 function shootDoubleShot() {
   for (let i = 0; i < doubleShot.length; i++) {
     doubleShot[i].y += doubleShot[i].dy;
@@ -391,12 +478,14 @@ function shootDoubleShot() {
       doubleShot[i].r * 2,
       doubleShot[i].r * 2
     );
-    if (doubleShot[i].y < 100) {
+    //getting rid of bullets once they are off the screen
+    if (doubleShot[i].y < 0) {
       doubleShot.shift();
     }
   }
 }
 
+//combining the shooting functions so that bullets are shot depending on what the state is
 function shoot() {
   if (shotType === "basic shot") {
     shootBasicShot();
@@ -405,22 +494,31 @@ function shoot() {
   }
 }
 
+//detects if an any alien is hit by any bullet by looping throught both arrays
+//ONLY WORKS WITH BASIC SHOT
 function detectIfHitByBulletAndDestroyAlien() {
   if (shotType === "basic shot") {
     for (let i = 0; i < basicShot.length; i++) {
       for (let j = 0; j < aliens.length; j++) {
+        //checking is a bullet hits an aliens hitbox
         if (
           basicShot[i].x > aliens[j].x - 28 &&
           basicShot[i].x < aliens[j].x + 25 &&
           basicShot[i].y > aliens[j].y - 25 &&
           basicShot[i].y < aliens[j].y + 25
+          
         ) {
-          // basicShot.splice(i, 1);
+          //getting rid of aliens that are hit
           aliens.splice(j, 1);
+          //adding one to the score for every alien that is killed
+          score += 1;
         }
       }
     }
   }
+
+  //DOUBLE SHOT BULLETS CANNOT BE DETECTED YET THEY WILL NOT KILL THE ALIENS
+
   // else if (shotType === "double shot") {
   //   for (let i = 0; i < basicShot.length; i++) {
   //     for (let j = 0; j < aliens.length; j++) {
@@ -433,19 +531,18 @@ function detectIfHitByBulletAndDestroyAlien() {
   //     }
   //   }
   // }
+
+  //DOUBLE SHOT BULLETS CANNOT BE DETECTED YET THEY WILL NOT KILL THE ALIENS
 }
 
-//       if  > aliens[i].x - 28 &&
-//          < aliens[i].x + 25 &&
-//         > aliens[i].y - 25 &&
-//          < aliens[i].y + 25) {
-
+//draws a hitbox around the palne
 function drawPlaneHitBox() {
   fill(255);
   rect(planeX - 20 * scalar, planeY - 190 * scalar, 40 * scalar, 250 * scalar);
   rect(planeX - 125 * scalar, planeY + 1 * scalar, 255 * scalar, 200 * scalar);
 }
 
+//detects if the plane is hit by an alien by comparing the hitboxes of both
 function detectIfPlaneHitByAlien() {
   for (let i = 0; i < aliens.length; i++) {
     if (
@@ -455,6 +552,8 @@ function detectIfPlaneHitByAlien() {
       aliens[i].y + 25 <= planeY + 60 * scalar
     ) {
       gameMode = "game over";
+      //wipes current aliens off the screen
+      aliens = [];
     } else if (
       aliens[i].x + 25 >= planeX - 125 * scalar &&
       aliens[i].x - 28 <= planeX + 130 * scalar &&
@@ -462,23 +561,34 @@ function detectIfPlaneHitByAlien() {
       aliens[i].y - 25 <= planeY + 201 * scalar
     ) {
       gameMode = "game over";
+      //wipes current aliens off the screen
+      aliens = [];
     }
   }
 }
 
+//creating a class to store basic information from which all aliens will be made
 class Alien {
+  //sample alien coordinate values
   constructor(x, y) {
     this.x = x;
     this.y = y;
   }
 
+  //moving the individual alien according to difficulty
   moveIndividualAliens() {
-    this.x = this.x + random(-1, 1);
-    this.y = this.y + random(0, 1);
+    let movementValue = 1;
+    if (gameMode === "easy mode") {
+      movementValue = 1;
+    } else if (gameMode === "hard mode") {
+      movementValue = 3;
+    }
+    this.x = this.x + random(-movementValue, movementValue);
+    this.y = this.y + random(0, movementValue);
     imageMode(CENTER);
     image(alienImage, this.x, this.y, 50, 50);
   }
-
+  //creating a hitbox for an individual aliens
   individualHitBox() {
     noStroke();
     noFill();
@@ -486,6 +596,7 @@ class Alien {
   }
 }
 
+//pushing alien values into the aliens array to be created
 function createNewAliens() {
   aliens.push(
     new Alien(width * random(0.05, 0.12), 150),
@@ -496,15 +607,19 @@ function createNewAliens() {
   );
 }
 
+//looping through all the aliens created to apply the movement function to each of them
 function moveAliens() {
   for (let i = 0; i < aliens.length; i++) {
     aliens[i].moveIndividualAliens();
     if (aliens[i].y > height) {
       aliens.shift();
+      gameMode = "game over";
+      aliens = [];
     }
   }
 }
 
+//using millis to continously send waves of aliens over time
 function sendAlienWaves() {
   if (millis() >= lastTimeWaveWasSent + timeBetweenWaves) {
     createNewAliens();
@@ -513,6 +628,7 @@ function sendAlienWaves() {
   }
 }
 
+//looping through all aliens to draw a hitbox
 function drawHitBox() {
   for (let i = 0; i < aliens.length; i++) {
     aliens[i].individualHitBox();

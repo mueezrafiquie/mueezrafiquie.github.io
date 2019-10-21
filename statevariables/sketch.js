@@ -26,7 +26,7 @@ let scalar = 0.2;
 //state variables: one that changes the type of bullets the plane shoots and the other
 //which switches the game between screens
 let shotType = "basic shot";
-let gameMode = "game over";
+let gameMode = "main menu";
 
 //arrays to store the data from the objects being used to push information into them
 let basicShot = [];

@@ -2,9 +2,10 @@
 // Mueez Rafiquie
 // Sept 21, 2019
 //
-//
-//
-//
+//The objective of this game is stay alive while getting the highest score possible. The "How to play" section has the instructions for the
+//game. State Variables are used in this game to change between the different screens and game modes as well as shot types. When playing the
+//game, it works best to scale it to 75% on WMCI computers. The Double Shot shot type does not get detected by the aliens current so you can't
+//use it to kill them which is why I haven't added in a function to allow you to change between the shot types yet. 
 //
 //
 
@@ -27,6 +28,7 @@ let scalar = 0.2;
 //which switches the game between screens
 let shotType = "basic shot";
 let gameMode = "main menu";
+let currentGameMode;
 
 //arrays to store the data from the objects being used to push information into them
 let basicShot = [];
@@ -113,12 +115,14 @@ function runGame() {
 
 //running easy version of game
 function runEasyModeGame() {
+  currentGameMode = "easy mode"
   timeBetweenWaves = 7000;
   runGame();
 }
 
 //running hard version of game
 function runHardModeGame() {
+  currentGameMode = "hard mode"
   //lowering time between waves to increase difficulty
   timeBetweenWaves = 2000;
   runGame();
@@ -224,15 +228,25 @@ function showInstructions() {
     height / 2 + 50
   );
   text(
+    "Get the HIGHEST SCORE POSSIBLE before the Aliens win",
+    width / 2,
+    height / 2 + 135
+  );
+  text(
+    "Press the L key to switch between basic and double shot",
+    width / 2,
+    height / 2 + 215
+  );
+  text(
     "To access the main menu at any time, press the m key",
     width / 2,
-    height / 2 + 170
+    height / 2 + 250
   );
 
   //back to main menu button
   textSize(80);
   fill(255);
-  text("Back", 250, 125);
+  text("back", 250, 125);
 }
 
 //displaying a "back button" which changes colour when hovered over and sends you back to the
@@ -245,7 +259,7 @@ function checkIfBackButtonClicked() {
     mouseY < 125 + 75
   ) {
     fill(0, 255, 0, 125);
-    text("Back", 250, 125);
+    text("back", 250, 125);
     if (mouseIsPressed) {
       gameMode = "main menu";
     }
@@ -298,7 +312,12 @@ function checkIfAResetButtonsClicked() {
     text("Play Again", width / 2 + 400, height / 2 + 350);
     if (mouseIsPressed) {
       score = 0;
-      gameMode = "easy mode";
+      if (currentGameMode === "easy mode") {
+        gameMode = "easy mode"
+      }
+      else if (currentGameMode === "hard mode") {
+        gameMode = "hard mode"
+      }
     }
   } else if (
     mouseX > width / 2 - 400 - 200 &&
@@ -325,10 +344,10 @@ function showScore() {
   text(score, width - 90, 90);
 }
 
-//allowing the window to be resized
-function windowResized() {
-  setup();
-}
+//since this loops the createaliens function in setup it messes with the game
+// function windowResized() {
+//   setup();
+// }
 
 //adding mouseWheel function which will use the same scalar variable to control the size of the plane
 //this doesn't have a practical use in the game yet but will in a future version
@@ -412,10 +431,18 @@ function moveInsideCanvas() {
   }
 }
 
+function resetArrays() {
+  basicShot = [];
+  doubleShot = [];
+  aliens = [];
+}
+
 //allowing plane to shoot
 function keyPressed() {
   //creating objects in which information about the bullets is stored to be pushed into arrays
-  if (keyCode === 32) {
+  if (keyCode === 32 && shotType === "basic shot") {
+    //playing sound and created the object for the basic shot
+    shootingSound.play();
     let basicShotValues = {
       x: planeX,
       y: planeY - 210 * scalar,
@@ -423,7 +450,10 @@ function keyPressed() {
       dy: -5
     };
     basicShot.push(basicShotValues);
-
+  }
+  else if (keyCode === 32 && shotType === "double shot") {
+    //playing sound and created the object for the double shot
+    shootingSound.play();
     let doubleShotValues = {
       x: planeX,
       y: planeY - 210 * scalar,
@@ -432,11 +462,20 @@ function keyPressed() {
     };
     doubleShot.push(doubleShotValues);
   }
+  //allowing you to switch between shot types
+  else if (keyCode === 76) {
+    if (shotType === "basic shot") {
+      shotType = "double shot"
+    }
+    else if (shotType === "double shot") {
+      shotType = "basic shot"
+    }
+  }
   //allowing the menu to be accessed at any time by using the "m" key
   else if (keyCode === 77) {
     gameMode = "main menu";
     score = 0;
-    aliens = [];
+    resetArrays()
   }
 }
 
@@ -517,23 +556,30 @@ function detectIfHitByBulletAndDestroyAlien() {
     }
   }
 
-  //DOUBLE SHOT BULLETS CANNOT BE DETECTED YET THEY WILL NOT KILL THE ALIENS
+  // DOUBLE SHOT BULLETS CANNOT BE DETECTED YET THEY WILL NOT KILL THE ALIENS
 
-  // else if (shotType === "double shot") {
-  //   for (let i = 0; i < basicShot.length; i++) {
-  //     for (let j = 0; j < aliens.length; j++) {
-
-  //         console.log("yup")
-  //       }
-  //       else {
-  //         console.log("nope")
-  //       }
-  //     }
-  //   }
-  // }
-
-  //DOUBLE SHOT BULLETS CANNOT BE DETECTED YET THEY WILL NOT KILL THE ALIENS
+  else if (shotType === "double shot") {
+    for (let i = 0; i < doubleShot.length; i++) {
+      for (let j = 0; j < aliens.length; j++) {
+        if (
+          doubleShot[i].x > aliens[j].x - 28 &&
+          doubleShot[i].x < aliens[j].x + 25 &&
+          doubleShot[i].y > aliens[j].y - 25 &&
+          doubleShot[i].y < aliens[j].y + 25
+          
+        ) {
+          //getting rid of aliens that are hit
+          aliens.splice(j, 1);
+          //adding one to the score for every alien that is killed
+          score += 1;
+        }
+      }
+    }
+  }
 }
+
+  // DOUBLE SHOT BULLETS CANNOT BE DETECTED YET THEY WILL NOT KILL THE ALIENS
+
 
 //draws a hitbox around the palne
 function drawPlaneHitBox() {
@@ -553,7 +599,7 @@ function detectIfPlaneHitByAlien() {
     ) {
       gameMode = "game over";
       //wipes current aliens off the screen
-      aliens = [];
+      resetArrays();
     } else if (
       aliens[i].x + 25 >= planeX - 125 * scalar &&
       aliens[i].x - 28 <= planeX + 130 * scalar &&
@@ -562,7 +608,7 @@ function detectIfPlaneHitByAlien() {
     ) {
       gameMode = "game over";
       //wipes current aliens off the screen
-      aliens = [];
+      resetArrays();
     }
   }
 }
@@ -614,7 +660,7 @@ function moveAliens() {
     if (aliens[i].y > height) {
       aliens.shift();
       gameMode = "game over";
-      aliens = [];
+      resetArrays();
     }
   }
 }

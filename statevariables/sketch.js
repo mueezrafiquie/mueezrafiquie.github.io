@@ -2,13 +2,13 @@
 // Mueez Rafiquie
 // Sept 21, 2019
 //
-//The objective of this game is stay alive while getting the highest score possible. The "How to play" section has the instructions for the game. 
-//State Variables are used in this game to change between the different screens and game modes as well as shot types. 
+//The objective of this game is stay alive while getting the highest score possible. The "How to play" section has the instructions for the game.
+//State Variables are used in this game to change between the different screens and game modes as well as shot types.
 //Arrays are used to store information for the aliens and bullets making it easy to loop though them with functions.
-//When playing the game, it works best to scale it to 75% on WMCI computers. 
+//When playing the game, it works best to scale it to 75% on WMCI computers with chrome.
 //
-//
-
+//For extra material I used youtube videos to teach myself about classes to make my system of bringing down aliens possible
+//and also added some CSS to my website
 
 //Global Variables
 
@@ -21,7 +21,6 @@ let plane;
 let planeX;
 let planeY;
 let canPlaneMove = true;
-
 let scalar = 0.2;
 
 //state variables: one that changes the type of bullets the plane shoots and the other
@@ -85,6 +84,11 @@ function draw() {
   }
 }
 
+//added this so you can zoom in and out to fit the screen and don't have to refresh screen since it doesn't fit properly right now
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+}
+
 //combining all the function necessary to run the game
 function runGame() {
   //drawing background
@@ -110,19 +114,19 @@ function runGame() {
 
   //these last two functions were used to help create the collision detection system but are not necessary for the game to run
   // drawHitBox();
-  // drawPlaneHitBox();  
+  // drawPlaneHitBox();
 }
 
 //running easy version of game
 function runEasyModeGame() {
-  currentGameMode = "easy mode"
+  currentGameMode = "easy mode";
   timeBetweenWaves = 7000;
   runGame();
 }
 
 //running hard version of game
 function runHardModeGame() {
-  currentGameMode = "hard mode"
+  currentGameMode = "hard mode";
   //lowering time between waves to increase difficulty
   timeBetweenWaves = 2000;
   runGame();
@@ -313,10 +317,9 @@ function checkIfAResetButtonsClicked() {
     if (mouseIsPressed) {
       score = 0;
       if (currentGameMode === "easy mode") {
-        gameMode = "easy mode"
-      }
-      else if (currentGameMode === "hard mode") {
-        gameMode = "hard mode"
+        gameMode = "easy mode";
+      } else if (currentGameMode === "hard mode") {
+        gameMode = "hard mode";
       }
     }
   } else if (
@@ -450,8 +453,7 @@ function keyPressed() {
       dy: -5
     };
     basicShot.push(basicShotValues);
-  }
-  else if (keyCode === 32 && shotType === "double shot") {
+  } else if (keyCode === 32 && shotType === "double shot") {
     //playing sound and created the object for the double shot
     shootingSound.play();
     let doubleShotValues = {
@@ -465,17 +467,16 @@ function keyPressed() {
   //allowing you to switch between shot types
   else if (keyCode === 76) {
     if (shotType === "basic shot") {
-      shotType = "double shot"
-    }
-    else if (shotType === "double shot") {
-      shotType = "basic shot"
+      shotType = "double shot";
+    } else if (shotType === "double shot") {
+      shotType = "basic shot";
     }
   }
   //allowing the menu to be accessed at any time by using the "m" key
   else if (keyCode === 77) {
     gameMode = "main menu";
     score = 0;
-    resetArrays()
+    resetArrays();
   }
 }
 
@@ -545,7 +546,6 @@ function detectIfHitByBulletAndDestroyAlien() {
           basicShot[i].x < aliens[j].x + 25 &&
           basicShot[i].y > aliens[j].y - 25 &&
           basicShot[i].y < aliens[j].y + 25
-          
         ) {
           //getting rid of aliens that are hit
           aliens.splice(j, 1);
@@ -557,7 +557,6 @@ function detectIfHitByBulletAndDestroyAlien() {
   }
 
   // DOUBLE SHOT BULLETS CANNOT BE DETECTED YET THEY WILL NOT KILL THE ALIENS
-
   else if (shotType === "double shot") {
     for (let i = 0; i < doubleShot.length; i++) {
       for (let j = 0; j < aliens.length; j++) {
@@ -566,7 +565,6 @@ function detectIfHitByBulletAndDestroyAlien() {
           doubleShot[i].x < aliens[j].x + 25 &&
           doubleShot[i].y > aliens[j].y - 25 &&
           doubleShot[i].y < aliens[j].y + 25
-          
         ) {
           //getting rid of aliens that are hit
           aliens.splice(j, 1);
@@ -578,8 +576,7 @@ function detectIfHitByBulletAndDestroyAlien() {
   }
 }
 
-  // DOUBLE SHOT BULLETS CANNOT BE DETECTED YET THEY WILL NOT KILL THE ALIENS
-
+// DOUBLE SHOT BULLETS CANNOT BE DETECTED YET THEY WILL NOT KILL THE ALIENS
 
 //draws a hitbox around the palne
 function drawPlaneHitBox() {

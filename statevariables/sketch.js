@@ -2,10 +2,10 @@
 // Mueez Rafiquie
 // Sept 21, 2019
 //
-//The objective of this game is stay alive while getting the highest score possible. The "How to play" section has the instructions for the
-//game. State Variables are used in this game to change between the different screens and game modes as well as shot types. When playing the
-//game, it works best to scale it to 75% on WMCI computers. The Double Shot shot type does not get detected by the aliens current so you can't
-//use it to kill them which is why I haven't added in a function to allow you to change between the shot types yet. 
+//The objective of this game is stay alive while getting the highest score possible. The "How to play" section has the instructions for the game. 
+//State Variables are used in this game to change between the different screens and game modes as well as shot types. 
+//Arrays are used to store information for the aliens and bullets making it easy to loop though them with functions.
+//When playing the game, it works best to scale it to 75% on WMCI computers. 
 //
 //
 
@@ -21,7 +21,7 @@ let plane;
 let planeX;
 let planeY;
 let canPlaneMove = true;
-// let scalar = 0.1;
+
 let scalar = 0.2;
 
 //state variables: one that changes the type of bullets the plane shoots and the other

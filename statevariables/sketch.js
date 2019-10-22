@@ -338,7 +338,7 @@ function checkIfAResetButtonsClicked() {
   }
 }
 
-//displaying score with the score variable while the game is running
+//displaying score with the score variable while the game is running in the top right
 function showScore() {
   rectMode(CENTER);
   textAlign(CENTER, CENTER);
